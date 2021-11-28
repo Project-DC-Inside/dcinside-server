@@ -1,13 +1,11 @@
-package com.deepforest.dcinsideserver;
+package com.deepforest;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DcinsideServerApplication {
-
+public class ApiApplication {
     public static void main(String[] args) {
-        SpringApplication.run(DcinsideServerApplication.class, args);
+        SpringApplication.run(ApiApplication.class, args);
     }
-
 }
