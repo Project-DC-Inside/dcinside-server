@@ -11,8 +11,12 @@ class RefreshToken(
 
     @Id
     @Column(name = "refresh_token_key")
-    private val key: String,
+    val key: String,
 
     @Column(name = "refresh_token_value")
-    private val value: String
-)
+    var value: String
+) {
+    fun updateValue(token: String) {
+        this.value = token
+    }
+}
