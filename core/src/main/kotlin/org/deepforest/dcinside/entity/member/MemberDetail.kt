@@ -12,7 +12,7 @@ class MemberDetail(
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_detail_id")
-    val id: Long?,
+    val id: Long? = null,
 
     @Column(name = "email")
     val email: String,
@@ -22,5 +22,5 @@ class MemberDetail(
 
     @OneToOne
     @JoinColumn(name = "member_id")
-    val member: Member
+    val member: Member? = null
 )

@@ -23,10 +23,10 @@ class Member(
     @Column(name = "member_role")
     val role: MemberRole,
 
-    @OneToOne(mappedBy = "member")
-    val memberDetail: MemberDetail? = null
+    @OneToOne(mappedBy = "member", cascade = [CascadeType.PERSIST, CascadeType.REMOVE])
+    var memberDetail: MemberDetail? = null
 )
 
 enum class MemberRole {
-    NONE, BASIC, ORANGE, BLUE
+    ROLE_NONE, ROLE_BASIC, ROLE_ORANGE, ROLE_BLUE
 }
