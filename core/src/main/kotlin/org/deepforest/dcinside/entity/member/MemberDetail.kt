@@ -4,7 +4,8 @@ import javax.persistence.*
 
 
 @Table(
-    indexes = [Index(columnList = "nickname, nickname_type")]
+    indexes = [Index(columnList = "nickname, nickname_type")],
+    uniqueConstraints = [UniqueConstraint(columnNames = ["email"])]
 )
 @Entity
 class MemberDetail(
@@ -13,11 +14,8 @@ class MemberDetail(
     @Column(name = "member_detail_id")
     val id: Long?,
 
-    @Column(name = "email", unique = true)
+    @Column(name = "email")
     val email: String,
-
-    @Column(name = "password")
-    val password: String,
 
     @Embedded
     val nickname: Nickname,
