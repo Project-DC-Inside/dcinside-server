@@ -1,0 +1,16 @@
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    configUrl: /api-docs               # configUrl 에 /api-docs 지정
+    disable-swagger-default-url: true   # default config url 삭제
+
+  # api-docs 노출하는 경로 설정 (default: /v3/api-docs)
+  api-docs:
+    path: /api-docs
+
+  # 스웨거에 노출할 API 경로 설정
+  paths-to-match:
+    - /api/v1/**
+
+  cache:
+    disabled: true

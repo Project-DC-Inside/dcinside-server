@@ -28,17 +28,12 @@ class SecurityConfig(
         return BCryptPasswordEncoder()
     }
 
-    // Pass
-    // Swagger / HealthIndicator
+    // Allowed Path
     override fun configure(web: WebSecurity) {
         web.ignoring()
+            // Swagger
             .antMatchers(
-                "/favicon.ico", "/health/**"
-            )
-            .antMatchers(
-                "/v2/api-docs", "/configuration/ui",
-                "/swagger-resources/**", "/configuration/security",
-                "/swagger-ui.html", "/webjars/**", "/swagger/**"
+                "/api-docs", "/swagger-ui.html", "/swagger-ui/**"
             )
     }
 
