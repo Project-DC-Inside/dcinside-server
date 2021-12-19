@@ -19,7 +19,7 @@ class ResponseDto<R>(
             return ResponseDto(false, null, Error(code, message))
         }
 
-        fun <R> fail(code: String): ResponseDto<R> {
+        fun fail(code: String): ResponseDto<Void> {
             return ResponseDto(false, null, Error(code, null));
         }
     }
