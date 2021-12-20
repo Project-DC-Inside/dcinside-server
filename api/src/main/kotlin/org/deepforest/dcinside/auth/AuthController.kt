@@ -1,14 +1,13 @@
 package org.deepforest.dcinside.auth
 
 import io.swagger.v3.oas.annotations.Operation
-import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.deepforest.dcinside.auth.dto.SigninReqDto
 import org.deepforest.dcinside.auth.dto.SignupReqDto
 import org.deepforest.dcinside.auth.dto.TokenReqDto
 import org.deepforest.dcinside.configuration.jwt.TokenDto
-import org.springframework.http.ResponseEntity
+import org.deepforest.dcinside.dto.ResponseDto
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -29,7 +28,7 @@ class AuthController(
     @PostMapping("/signup")
     fun signup(
         @RequestBody signupReqDto: SignupReqDto
-    ): ResponseEntity<String> = ResponseEntity.ok(
+    ): ResponseDto<String> = ResponseDto.ok(
         authService.signup(signupReqDto)
     )
 
@@ -43,7 +42,7 @@ class AuthController(
     @PostMapping("/signin")
     fun signin(
         @RequestBody signinReqDto: SigninReqDto
-    ): ResponseEntity<TokenDto> = ResponseEntity.ok(
+    ): ResponseDto<TokenDto> = ResponseDto.ok(
         authService.signin(signinReqDto)
     )
 
@@ -57,7 +56,7 @@ class AuthController(
     @PostMapping("/reissue")
     fun reissue(
         @RequestBody tokenReqDto: TokenReqDto
-    ): ResponseEntity<TokenDto> = ResponseEntity.ok(
+    ): ResponseDto<TokenDto> = ResponseDto.ok(
         authService.reissue(tokenReqDto)
     )
 }
