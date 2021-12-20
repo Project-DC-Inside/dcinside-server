@@ -3,6 +3,8 @@ package org.deepforest.dcinside.configuration.jwt
 import io.jsonwebtoken.*
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
+import org.deepforest.dcinside.dto.ErrorCode
+import org.deepforest.dcinside.exception.ApiException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -74,7 +76,7 @@ class TokenProvider(
         val claims: Claims = parseClaims(accessToken)
 
         if (claims[AUTHORITIES_KEY] == null) {
-            throw RuntimeException("권한 정보가 없는 토큰입니다.")
+            throw ApiException(ErrorCode.NOT_FOUND_AUTHORITIES_KEY)
         }
 
         // 클레임에서 권한 정보 가져오기

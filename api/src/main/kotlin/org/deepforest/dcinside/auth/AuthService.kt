@@ -5,8 +5,12 @@ import org.deepforest.dcinside.auth.dto.SignupReqDto
 import org.deepforest.dcinside.auth.dto.TokenReqDto
 import org.deepforest.dcinside.configuration.jwt.TokenDto
 import org.deepforest.dcinside.configuration.jwt.TokenProvider
+import org.deepforest.dcinside.dto.ErrorCode
 import org.deepforest.dcinside.entity.auth.RefreshToken
+import org.deepforest.dcinside.entity.member.Member
+import org.deepforest.dcinside.exception.ApiException
 import org.deepforest.dcinside.member.MemberRepository
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.core.Authentication
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -25,10 +29,13 @@ class AuthService(
 
     @Transactional
     fun signup(signupReqDto: SignupReqDto): String {
-        return signupReqDto.toMember(passwordEncoder)
-            .also {
-                memberRepository.save(it)
-            }.username
+        val member: Member = signupReqDto.toMember(passwordEncoder)
+
+        if (memberRepository.findByUsername(member.username) != null) {
+            throw ApiException(ErrorCode.CONFLICT_USERNAME)
+        }
+
+        return memberRepository.save(member).username
     }
 
     @Transactional
@@ -38,7 +45,11 @@ class AuthService(
 
         // 2. 실제로 검증 (사용자 비밀번호 체크) 이 이루어지는 부분
         //    authenticate 메서드가 실행이 될 때 CustomUserDetailsService 에서 만들었던 loadUserByUsername 메서드가 실행됨
-        val authentication: Authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken)
+        val authentication: Authentication = try {
+            authenticationManagerBuilder.getObject().authenticate(authenticationToken)
+        } catch (e: BadCredentialsException) {
+            throw ApiException(ErrorCode.MISMATCH_PASSWORD)
+        }
 
         // 3. 인증 정보를 기반으로 JWT 토큰 생성
         val tokenDto = tokenProvider.generateTokenDto(authentication)
@@ -56,7 +67,7 @@ class AuthService(
     fun reissue(tokenReqDto: TokenReqDto): TokenDto {
         // 1. Refresh Token 검증
         if (!tokenProvider.validateToken(tokenReqDto.refreshToken)) {
-            throw RuntimeException("유효하지 않은 리프레시 토큰입니다.")
+            throw ApiException(ErrorCode.INVALID_REFRESH_TOKEN)
         }
 
         // 2. Access Token 에서 Member ID 가져오기
@@ -64,20 +75,16 @@ class AuthService(
 
         // 3. 저장소에서 Member ID 를 기반으로 Refresh Token 값 가져옴
         val refreshToken = refreshTokenRepository.findByKey(authentication.name)
-            ?: throw RuntimeException("리프레시 토큰 키가 존재하지 않습니다.")
+            ?: throw ApiException(ErrorCode.NOT_FOUND_REFRESH_TOKEN)
 
         // 4. Refresh Token 일치하는지 검사
         if (refreshToken.value != tokenReqDto.refreshToken) {
-            throw RuntimeException("리프레시 토큰이 일치하지 않습니니다")
+            throw ApiException(ErrorCode.MISMATCH_REFRESH_TOKEN)
         }
 
-        // 5. 새로운 토큰 생성
-        val tokenDto = tokenProvider.generateTokenDto(authentication)
-
-        // 6. 저장소 정보 업데이트
-        refreshToken.updateValue(tokenDto.refreshToken)
-
-        // 토큰 발급
-        return tokenDto
+        // 5. 새로운 토큰 생성 후 발급
+        return tokenProvider.generateTokenDto(authentication).also {
+            refreshToken.updateValue(it.refreshToken)
+        }
     }
 }

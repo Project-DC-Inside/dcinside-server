@@ -15,8 +15,8 @@ class ResponseDto<R>(
             return ResponseDto(true, result)
         }
 
-        fun fail(code: String, message: String? = null): ResponseDto<Void> {
-            return ResponseDto(false, error = Error(code, message))
+        fun fail(code: ErrorCode): ResponseDto<Void> {
+            return ResponseDto(false, error = Error(code))
         }
     }
 }
