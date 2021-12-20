@@ -2,25 +2,21 @@ package org.deepforest.dcinside.dto
 
 class ResponseDto<R>(
     val success: Boolean,
-    val result: R?,
-    val error: Error?
+    val result: R? = null,
+    val error: Error? = null
 ) {
 
     companion object {
         fun ok(): ResponseDto<Void> {
-            return ResponseDto(true, null, null)
+            return ResponseDto(true)
         }
 
         fun <R> ok(result: R): ResponseDto<R> {
-            return ResponseDto(true, result, null)
+            return ResponseDto(true, result)
         }
 
-        fun fail(code: String, message: String): ResponseDto<Void> {
-            return ResponseDto(false, null, Error(code, message))
-        }
-
-        fun fail(code: String): ResponseDto<Void> {
-            return ResponseDto(false, null, Error(code, null));
+        fun fail(code: String, message: String? = null): ResponseDto<Void> {
+            return ResponseDto(false, error = Error(code, message))
         }
     }
 }
