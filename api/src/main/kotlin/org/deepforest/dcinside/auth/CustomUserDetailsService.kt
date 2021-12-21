@@ -1,6 +1,6 @@
 package org.deepforest.dcinside.auth
 
-import org.deepforest.dcinside.configuration.ApiException
+import org.deepforest.dcinside.dto.ApiException
 import org.deepforest.dcinside.dto.ErrorCode
 import org.deepforest.dcinside.entity.member.Member
 import org.deepforest.dcinside.member.MemberRepository

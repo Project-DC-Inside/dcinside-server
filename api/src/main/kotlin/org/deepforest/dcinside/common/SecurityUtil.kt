@@ -1,7 +1,7 @@
 package org.deepforest.dcinside.common
 
+import org.deepforest.dcinside.dto.ApiException
 import org.deepforest.dcinside.dto.ErrorCode
-import org.deepforest.dcinside.configuration.ApiException
 import org.springframework.security.core.context.SecurityContextHolder
 
 object SecurityUtil {
