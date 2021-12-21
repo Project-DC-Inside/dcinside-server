@@ -1,6 +1,5 @@
 package org.deepforest.dcinside.dto
 
-class ApiException(val errorCode: ErrorCode) : Throwable()
 
 class Error(private val errorCode: ErrorCode) {
     val code: String
