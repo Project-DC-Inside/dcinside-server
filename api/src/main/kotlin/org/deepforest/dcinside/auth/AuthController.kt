@@ -28,7 +28,7 @@ class AuthController(
     @PostMapping("/signup")
     fun signup(
         @RequestBody signupReqDto: SignupReqDto
-    ): ResponseDto<String> = ResponseDto.ok(
+    ): ResponseDto<Unit> = ResponseDto.ok(
         authService.signup(signupReqDto)
     )
 

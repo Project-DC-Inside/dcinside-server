@@ -7,7 +7,7 @@ class ResponseDto<R>(
 ) {
 
     companion object {
-        fun ok(): ResponseDto<Void> {
+        fun ok(): ResponseDto<Unit> {
             return ResponseDto(true)
         }
 
@@ -15,8 +15,8 @@ class ResponseDto<R>(
             return ResponseDto(true, result)
         }
 
-        fun fail(code: String, message: String? = null): ResponseDto<Void> {
-            return ResponseDto(false, error = Error(code, message))
+        fun fail(code: ErrorCode): ResponseDto<Unit> {
+            return ResponseDto(false, error = Error(code))
         }
     }
 }
