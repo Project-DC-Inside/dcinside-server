@@ -5,12 +5,13 @@ import org.deepforest.dcinside.auth.dto.SignupReqDto
 import org.deepforest.dcinside.auth.dto.TokenReqDto
 import org.deepforest.dcinside.configuration.jwt.TokenDto
 import org.deepforest.dcinside.configuration.jwt.TokenProvider
+import org.deepforest.dcinside.dto.ApiException
 import org.deepforest.dcinside.dto.ErrorCode
 import org.deepforest.dcinside.entity.auth.RefreshToken
 import org.deepforest.dcinside.entity.member.Member
-import org.deepforest.dcinside.configuration.ApiException
 import org.deepforest.dcinside.member.MemberRepository
 import org.deepforest.dcinside.member.hasNotUsername
+import org.deepforest.dcinside.validation.check
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.core.Authentication
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -31,9 +32,7 @@ class AuthService(
     fun signup(signupReqDto: SignupReqDto) {
         val member: Member = signupReqDto.toMember(passwordEncoder)
 
-        check(memberRepository.hasNotUsername(member.username)) {
-            throw ApiException(ErrorCode.CONFLICT_USERNAME)
-        }
+        check(memberRepository.hasNotUsername(member.username)) { ErrorCode.CONFLICT_USERNAME }
 
         memberRepository.save(member)
     }
@@ -62,9 +61,7 @@ class AuthService(
     @Transactional
     fun reissue(tokenReqDto: TokenReqDto): TokenDto {
         // 1. Refresh Token 검증
-        if (!tokenProvider.validateToken(tokenReqDto.refreshToken)) {
-            throw ApiException(ErrorCode.INVALID_REFRESH_TOKEN)
-        }
+        check(tokenProvider.validateToken(tokenReqDto.refreshToken)) { ErrorCode.INVALID_REFRESH_TOKEN }
 
         // 2. Access Token 에서 Member ID 가져오기
         val authentication = tokenProvider.getAuthentication(tokenReqDto.accessToken)
@@ -74,9 +71,7 @@ class AuthService(
             ?: throw ApiException(ErrorCode.NOT_FOUND_REFRESH_TOKEN)
 
         // 4. Refresh Token 일치하는지 검사
-        check(refreshToken.value == tokenReqDto.refreshToken) {
-            throw ApiException(ErrorCode.MISMATCH_REFRESH_TOKEN)
-        }
+        check(refreshToken.value == tokenReqDto.refreshToken) { ErrorCode.MISMATCH_REFRESH_TOKEN }
 
         // 5. 새로운 토큰 생성 후 발급
         return tokenProvider.generateTokenDto(authentication).also {
