@@ -1,8 +1,8 @@
 package org.deepforest.dcinside.auth
 
-import org.deepforest.dcinside.dto.ApiException
 import org.deepforest.dcinside.dto.ErrorCode
 import org.deepforest.dcinside.entity.member.Member
+import org.deepforest.dcinside.exception.ApiException
 import org.deepforest.dcinside.member.MemberRepository
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
