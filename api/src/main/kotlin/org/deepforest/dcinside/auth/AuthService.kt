@@ -31,7 +31,9 @@ class AuthService(
     fun signup(signupReqDto: SignupReqDto) {
         val member: Member = signupReqDto.toMember(passwordEncoder)
 
-        check(memberRepository.hasNotUsername(member.username)) { throw ApiException(ErrorCode.CONFLICT_USERNAME) }
+        check(memberRepository.hasNotUsername(member.username)) {
+            throw ApiException(ErrorCode.CONFLICT_USERNAME)
+        }
 
         memberRepository.save(member)
     }
@@ -72,7 +74,9 @@ class AuthService(
             ?: throw ApiException(ErrorCode.NOT_FOUND_REFRESH_TOKEN)
 
         // 4. Refresh Token 일치하는지 검사
-        check(refreshToken.value == tokenReqDto.refreshToken) { throw ApiException(ErrorCode.MISMATCH_REFRESH_TOKEN) }
+        check(refreshToken.value == tokenReqDto.refreshToken) {
+            throw ApiException(ErrorCode.MISMATCH_REFRESH_TOKEN)
+        }
 
         // 5. 새로운 토큰 생성 후 발급
         return tokenProvider.generateTokenDto(authentication).also {
