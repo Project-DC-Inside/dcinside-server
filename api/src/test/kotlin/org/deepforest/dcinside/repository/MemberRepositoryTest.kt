@@ -19,7 +19,7 @@ class MemberRepositoryTest {
     @Test
     fun test() {
         memberRepository.save(
-            Member(username = "woody", password = "12345", role = MemberRole.NONE)
+            Member(username = "woody", password = "12345", role = MemberRole.ROLE_NONE)
         )
     }
 }
