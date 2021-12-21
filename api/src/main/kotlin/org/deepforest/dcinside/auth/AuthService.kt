@@ -5,10 +5,10 @@ import org.deepforest.dcinside.auth.dto.SignupReqDto
 import org.deepforest.dcinside.auth.dto.TokenReqDto
 import org.deepforest.dcinside.configuration.jwt.TokenDto
 import org.deepforest.dcinside.configuration.jwt.TokenProvider
-import org.deepforest.dcinside.dto.ApiException
 import org.deepforest.dcinside.dto.ErrorCode
 import org.deepforest.dcinside.entity.auth.RefreshToken
 import org.deepforest.dcinside.entity.member.Member
+import org.deepforest.dcinside.exception.ApiException
 import org.deepforest.dcinside.member.MemberRepository
 import org.deepforest.dcinside.member.hasNotUsername
 import org.deepforest.dcinside.validation.check
