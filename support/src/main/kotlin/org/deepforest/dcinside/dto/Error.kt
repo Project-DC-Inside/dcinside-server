@@ -1,5 +1,7 @@
 package org.deepforest.dcinside.dto
 
+class ApiException(val errorCode: ErrorCode) : Throwable()
+
 class Error(private val errorCode: ErrorCode) {
     val code: String
         get() = errorCode.name
@@ -19,5 +21,7 @@ enum class ErrorCode(val detail: String) {
     NOT_FOUND_MEMBER("존재하지 않는 ID 입니다."),
     CONFLICT_USERNAME("중복된 ID 가 존재합니다."),
     MISMATCH_PASSWORD("비밀번호가 일치하지 않습니다."),
+
+    INTERNAL_SERVER_ERROR("예상하지 못한 에러가 발생했습니다."),
     ;
 }

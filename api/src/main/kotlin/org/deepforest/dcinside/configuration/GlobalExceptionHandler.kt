@@ -1,5 +1,6 @@
 package org.deepforest.dcinside.configuration
 
+import org.deepforest.dcinside.dto.ApiException
 import org.deepforest.dcinside.dto.ErrorCode
 import org.deepforest.dcinside.dto.ResponseDto
 import org.springframework.security.authentication.BadCredentialsException
@@ -22,6 +23,10 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
         logger.error("message", e)
         return ResponseDto.fail(ErrorCode.MISMATCH_PASSWORD)
     }
-}
 
-class ApiException(val errorCode: ErrorCode) : Throwable()
+    @ExceptionHandler(Exception::class)
+    protected fun handleUnexpectedException(e: Exception): ResponseDto<Unit> {
+        logger.error("message", e)
+        return ResponseDto.fail(ErrorCode.INTERNAL_SERVER_ERROR)
+    }
+}

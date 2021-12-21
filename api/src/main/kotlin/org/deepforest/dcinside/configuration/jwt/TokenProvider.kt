@@ -4,7 +4,7 @@ import io.jsonwebtoken.*
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import org.deepforest.dcinside.dto.ErrorCode
-import org.deepforest.dcinside.configuration.ApiException
+import org.deepforest.dcinside.validation.checkNotNull
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -75,9 +75,7 @@ class TokenProvider(
         // 토큰 복호화
         val claims: Claims = parseClaims(accessToken)
 
-        checkNotNull(claims[AUTHORITIES_KEY]) {
-            throw ApiException(ErrorCode.NOT_FOUND_AUTHORITIES_KEY)
-        }
+        checkNotNull(claims[AUTHORITIES_KEY]) { ErrorCode.NOT_FOUND_AUTHORITIES_KEY }
 
         // 클레임에서 권한 정보 가져오기
         val authorities: Collection<GrantedAuthority?> =
