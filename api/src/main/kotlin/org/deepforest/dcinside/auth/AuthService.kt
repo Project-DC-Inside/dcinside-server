@@ -8,9 +8,9 @@ import org.deepforest.dcinside.configuration.jwt.TokenProvider
 import org.deepforest.dcinside.dto.ErrorCode
 import org.deepforest.dcinside.entity.auth.RefreshToken
 import org.deepforest.dcinside.entity.member.Member
-import org.deepforest.dcinside.exception.ApiException
+import org.deepforest.dcinside.configuration.ApiException
 import org.deepforest.dcinside.member.MemberRepository
-import org.springframework.security.authentication.BadCredentialsException
+import org.deepforest.dcinside.member.hasNotUsername
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.core.Authentication
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -28,14 +28,12 @@ class AuthService(
 ) {
 
     @Transactional
-    fun signup(signupReqDto: SignupReqDto): String {
+    fun signup(signupReqDto: SignupReqDto) {
         val member: Member = signupReqDto.toMember(passwordEncoder)
 
-        if (memberRepository.findByUsername(member.username) != null) {
-            throw ApiException(ErrorCode.CONFLICT_USERNAME)
-        }
+        check(memberRepository.hasNotUsername(member.username)) { throw ApiException(ErrorCode.CONFLICT_USERNAME) }
 
-        return memberRepository.save(member).username
+        memberRepository.save(member)
     }
 
     @Transactional
@@ -45,11 +43,7 @@ class AuthService(
 
         // 2. 실제로 검증 (사용자 비밀번호 체크) 이 이루어지는 부분
         //    authenticate 메서드가 실행이 될 때 CustomUserDetailsService 에서 만들었던 loadUserByUsername 메서드가 실행됨
-        val authentication: Authentication = try {
-            authenticationManagerBuilder.getObject().authenticate(authenticationToken)
-        } catch (e: BadCredentialsException) {
-            throw ApiException(ErrorCode.MISMATCH_PASSWORD)
-        }
+        val authentication: Authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken)
 
         // 3. 인증 정보를 기반으로 JWT 토큰 생성
         val tokenDto = tokenProvider.generateTokenDto(authentication)
@@ -78,9 +72,7 @@ class AuthService(
             ?: throw ApiException(ErrorCode.NOT_FOUND_REFRESH_TOKEN)
 
         // 4. Refresh Token 일치하는지 검사
-        if (refreshToken.value != tokenReqDto.refreshToken) {
-            throw ApiException(ErrorCode.MISMATCH_REFRESH_TOKEN)
-        }
+        check(refreshToken.value == tokenReqDto.refreshToken) { throw ApiException(ErrorCode.MISMATCH_REFRESH_TOKEN) }
 
         // 5. 새로운 토큰 생성 후 발급
         return tokenProvider.generateTokenDto(authentication).also {
