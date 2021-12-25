@@ -1,5 +1,6 @@
 package org.deepforest.dcinside.entity.auth
 
+import org.deepforest.dcinside.entity.BaseEntity
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -15,7 +16,7 @@ class RefreshToken(
 
     @Column(name = "refresh_token_value")
     var value: String
-) {
+) : BaseEntity() {
     fun updateValue(token: String) {
         this.value = token
     }
