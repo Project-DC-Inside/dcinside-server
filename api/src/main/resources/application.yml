@@ -4,3 +4,4 @@ spring:
       - jwt
       - db
       - swagger
+      - aws

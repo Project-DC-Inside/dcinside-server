@@ -5,7 +5,7 @@ import org.deepforest.dcinside.entity.gallery.Gallery
 import org.deepforest.dcinside.entity.member.Member
 import javax.persistence.*
 
-@Table(name = "post", indexes = [Index(columnList = "createdAt")])
+@Table(name = "post", indexes = [Index(columnList = "created_at")])
 @Entity
 class Post(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

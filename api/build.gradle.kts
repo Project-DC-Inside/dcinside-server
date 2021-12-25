@@ -13,6 +13,9 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-api:0.11.2")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
+
+    // aws
+    implementation("com.amazonaws:aws-java-sdk-s3:1.11.478")
 }
 
 tasks {
