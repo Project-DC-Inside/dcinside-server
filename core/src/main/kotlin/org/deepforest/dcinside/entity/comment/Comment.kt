@@ -5,7 +5,7 @@ import org.deepforest.dcinside.entity.member.Member
 import org.deepforest.dcinside.entity.post.Post
 import javax.persistence.*
 
-@Table(name = "comment", indexes = [Index(columnList = "createdAt")])
+@Table(name = "comment", indexes = [Index(columnList = "created_at")])
 @Entity
 class Comment(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
