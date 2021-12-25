@@ -12,10 +12,10 @@ import javax.persistence.MappedSuperclass
 @EntityListeners(AuditingEntityListener::class)
 class BaseEntity {
     @CreatedDate
-    @Column(name = "createdAt", columnDefinition = "timestamp")
+    @Column(name = "createdAt")
     var createdAt: LocalDateTime = LocalDateTime.MIN
 
     @LastModifiedDate
-    @Column(name = "updatedAt", columnDefinition = "timestamp")
+    @Column(name = "updatedAt")
     var updatedAt: LocalDateTime = LocalDateTime.MIN
 }
