@@ -11,11 +11,6 @@ import javax.persistence.*
 )
 @Entity
 class PostStatistics(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_statistics_id")
-    val id: Long = 0L,
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     val post: Post,
@@ -30,5 +25,10 @@ class PostStatistics(
     var dislikeCount: Long = 0L,
 
     @JoinColumn(name = "comment_count")
-    var commentCount: Long = 0L
+    var commentCount: Long = 0L,
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_statistics_id")
+    val id: Long = 0L,
 )

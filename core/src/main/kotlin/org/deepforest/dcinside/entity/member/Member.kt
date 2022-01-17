@@ -11,11 +11,6 @@ import javax.persistence.*
 )
 @Entity
 class Member(
-
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_id")
-    val id: Long? = null,
-
     @Column(name = "username", nullable = false)
     val username: String,
 
@@ -30,7 +25,11 @@ class Member(
     var memberDetail: MemberDetail? = null,
 
     @OneToMany(mappedBy = "member")
-    val posts: MutableList<Post> = mutableListOf()
+    val posts: MutableList<Post> = mutableListOf(),
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member_id")
+    val id: Long = 0L,
 ) : BaseEntity()
 
 enum class MemberRole {
