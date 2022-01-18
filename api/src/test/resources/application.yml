@@ -3,6 +3,10 @@ logging:
     org.deepforest.dcinside: debug
 
 spring:
+  profiles:
+    include:
+      - jwt
+      - aws
   jpa:
     hibernate:
       ddl-auto: create
