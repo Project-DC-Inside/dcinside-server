@@ -8,6 +8,11 @@ import javax.persistence.*
 @Table(name = "comment", indexes = [Index(columnList = "created_at")])
 @Entity
 class Comment(
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "comment_id")
+    val id: Long? = null,
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "member_id")
     val member: Member,
@@ -27,9 +32,5 @@ class Comment(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "base_comment_id")
-    val baseComment: Comment? = null,
-
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comment_id")
-    val id: Long = 0L
+    val baseComment: Comment? = null
 ) : BaseEntity()
