@@ -6,6 +6,7 @@ import org.deepforest.dcinside.configuration.jwt.JwtSecurityConfig
 import org.deepforest.dcinside.configuration.jwt.TokenProvider
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -61,6 +62,8 @@ class SecurityConfig(
             .and()
             .authorizeRequests()
             .antMatchers("/api/**/auth/**").permitAll()
+            .antMatchers(HttpMethod.GET,"/api/v1/galleries").permitAll()
+            .antMatchers("/api/**/galleries/**").hasRole("ADMIN")
             .anyRequest().authenticated() // 나머지 API 는 전부 인증 필요
 
             // JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
