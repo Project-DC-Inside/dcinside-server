@@ -6,9 +6,10 @@ import javax.persistence.*
 
 @Entity
 class Gallery(
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "gallery_id")
-    val id: Long,
+    val id: Long? = null,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gallery_type")
@@ -18,7 +19,7 @@ class Gallery(
     val name: String,
 
     @OneToMany(mappedBy = "gallery")
-    val posts: MutableList<Post>
+    val posts: MutableList<Post> = mutableListOf(),
 ) : BaseEntity()
 
 enum class GalleryType {

@@ -7,6 +7,7 @@ import javax.persistence.Enumerated
 
 @Embeddable
 class Nickname(
+
     @Column(name = "nickname")
     val value: String,
 
