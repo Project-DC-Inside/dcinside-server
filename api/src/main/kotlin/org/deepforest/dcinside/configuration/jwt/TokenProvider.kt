@@ -36,7 +36,7 @@ class TokenProvider(
     companion object {
         val logger: Logger = LoggerFactory.getLogger(TokenProvider::class.java)
         private const val AUTHORITIES_KEY = "auth"
-        private const val BEARER_TYPE = "bearer"
+        private const val BEARER_TYPE = "Bearer"
         private const val ACCESS_TOKEN_EXPIRE_TIME  = 1000 * 60 * 30 // 30분
         private const val REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7 // 7일
     }
