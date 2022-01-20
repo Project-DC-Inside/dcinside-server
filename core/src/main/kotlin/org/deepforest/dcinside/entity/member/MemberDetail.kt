@@ -22,5 +22,5 @@ class MemberDetail(
 
     @OneToOne
     @JoinColumn(name = "member_id")
-    val member: Member? = null
+    val member: Member
 )

@@ -8,9 +8,10 @@ import javax.persistence.*
 @Table(name = "post", indexes = [Index(columnList = "created_at")])
 @Entity
 class Post(
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
-    val id: Long = 0L,
+    val id: Long? = null,
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "member_id")
@@ -23,15 +24,15 @@ class Post(
     @Column(updatable = false)
     val nickname : String,
 
-    @Column(updatable = false)
-    val password: String,
-
     val title: String,
 
     @Column(name = "content", columnDefinition="text")
     val content: String,
 
-    @OneToOne(mappedBy = "post", fetch = FetchType.LAZY)
-    val statistics: PostStatistics
-) : BaseEntity() {
-}
+    @Column(updatable = false)
+    val password: String,
+
+    @OneToOne(mappedBy = "post", fetch = FetchType.LAZY, cascade = [CascadeType.PERSIST, CascadeType.REMOVE])
+    var statistics: PostStatistics? = null
+) : BaseEntity()
+
