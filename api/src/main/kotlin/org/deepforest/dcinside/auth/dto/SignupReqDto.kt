@@ -12,12 +12,12 @@ data class SignupReqDto(
 ) {
     fun toMember(passwordEncoder: PasswordEncoder): Member {
         return Member(
-            username,
+            username = username,
             password = passwordEncoder.encode(password),
             role = MemberRole.ROLE_BASIC
         ).apply {
             memberDetail = MemberDetail(
-                email,
+                email = email,
                 nickname = Nickname(nickname, nicknameType),
                 member = this
             )
