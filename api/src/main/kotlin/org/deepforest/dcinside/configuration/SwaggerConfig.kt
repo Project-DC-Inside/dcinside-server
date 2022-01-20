@@ -16,18 +16,18 @@ class SwaggerConfig {
         return OpenAPI()
             .components(
                 Components().addSecuritySchemes(
-                    "bearerAuth",
+                    "BearerAuth",
                     SecurityScheme()
                         .type(SecurityScheme.Type.HTTP)
                         .`in`(SecurityScheme.In.HEADER)
                         .name("Authorization")
-                        .scheme("bearer")
+                        .scheme("Bearer")
                         .bearerFormat("JWT")
                 )
             )
             .security(
                 listOf(
-                    SecurityRequirement().addList("bearerAuth")
+                    SecurityRequirement().addList("BearerAuth")
                 )
             )
             .info(
