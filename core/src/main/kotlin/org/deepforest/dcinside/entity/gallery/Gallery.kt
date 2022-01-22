@@ -4,6 +4,11 @@ import org.deepforest.dcinside.entity.BaseEntity
 import org.deepforest.dcinside.entity.post.Post
 import javax.persistence.*
 
+@Table(
+    uniqueConstraints = [
+        UniqueConstraint(columnNames = ["gallery_type", "gallery_name"])
+    ]
+)
 @Entity
 class Gallery(
 
