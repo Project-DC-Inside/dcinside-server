@@ -44,5 +44,9 @@ class GalleryService(
         }
     }
 
-    fun delete(id: Long) = galleryRepository.deleteById(id)
+    fun delete(id: Long) {
+        galleryRepository.findByGalleryId(id).also {
+            galleryRepository.delete(it)
+        }
+    }
 }

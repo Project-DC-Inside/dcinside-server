@@ -28,7 +28,13 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(IllegalArgumentException::class)
     protected fun handleIllegalArgumentException(e: IllegalArgumentException): ResponseDto<Unit> {
         logger.error("message", e)
-        return ResponseDto.fail(ErrorCode.CONFLICT_GALLERY, e.message)
+        return ResponseDto.fail(ErrorCode.BAD_REQUEST, e.message)
+    }
+
+    @ExceptionHandler(NoSuchElementException::class)
+    protected fun handleNoSuchElementException(e: NoSuchElementException): ResponseDto<Unit> {
+        logger.error("message", e)
+        return ResponseDto.fail(ErrorCode.NOT_FOUND, e.message)
     }
 
     @ExceptionHandler(DataIntegrityViolationException::class)
