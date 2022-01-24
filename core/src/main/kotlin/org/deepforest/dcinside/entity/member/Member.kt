@@ -34,5 +34,5 @@ class Member(
 ) : BaseEntity()
 
 enum class MemberRole {
-    ROLE_NONE, ROLE_BASIC, ROLE_ORANGE, ROLE_BLUE
+    ROLE_NONE, ROLE_BASIC, ROLE_ORANGE, ROLE_BLUE, ROLE_ADMIN
 }
