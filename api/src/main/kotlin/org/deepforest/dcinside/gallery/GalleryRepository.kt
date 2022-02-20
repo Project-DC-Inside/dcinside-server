@@ -10,4 +10,5 @@ fun GalleryRepository.findByGalleryId(id: Long): Gallery =
 interface GalleryRepository : JpaRepository<Gallery, Long> {
     fun findByType(type: GalleryType): List<Gallery>
     fun findByName(name: String): List<Gallery>
+    fun findByGalleryTypeAndName(galleryType: GalleryType, galleryName: String) : Gallery
 }
