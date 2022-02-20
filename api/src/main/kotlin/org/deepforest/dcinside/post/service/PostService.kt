@@ -23,39 +23,58 @@ class PostService(
     private val galleryRepository: GalleryRepository,
     private val memberRepository: MemberRepository
 ) {
-    fun findPost(galleryType: GalleryType?): List<PostResponseDto> =
+    fun findPosts(galleryType: GalleryType?): List<PostResponseDto> =
         postRepository.findByGalleryType(galleryType)
             .stream()
             .map(PostResponseDto::from)
-            .collect(Collectors.toList());
+            .collect(Collectors.toList())
+
+    fun findPost(postId: Long): PostResponseDto =
+        postRepository.findById(postId)
+            .orElseThrow { ApiException(ErrorCode.NOT_FOUND) }
+            .let {
+                PostResponseDto.from(it)
+            }
+
 
     @Transactional
     fun add(postRequestDto: PostRequestDto) {
         val galley: Gallery = galleryRepository.findByGalleryTypeAndName(postRequestDto.galleryType, postRequestDto.galleryName)
         val member: Member = memberRepository.findById(SecurityUtil.getCurrentMemberId())
             .orElseThrow { ApiException(ErrorCode.UNAUTHORIZED_SECURITY_CONTEXT) }
-        val post: Post = postRequestDto.toEntity(member, galley);
-        postRepository.save(post);
+        val post: Post = postRequestDto.toEntity(member, galley)
+        postRepository.save(post)
     }
 
     @Transactional
-    fun update(postRequestDto: PostRequestDto) {
-        postRepository.findById(post)
+    fun update(postId: Long, postRequestDto: PostRequestDto) {
+        val post: Post = postRepository.findById(postId).orElseThrow { ApiException(ErrorCode.NOT_FOUND) }
         val member: Member = memberRepository.findById(SecurityUtil.getCurrentMemberId())
             .orElseThrow { ApiException(ErrorCode.UNAUTHORIZED_SECURITY_CONTEXT) }
-        val post: Post = postRequestDto.toEntity(member, galley);
-        postRepository.save(post);
-    }
 
-    @Transactional
-    fun delete(postRequestDto: PostRequestDto) {
+        if (post.member.username != member.username) {
+            throw ApiException(ErrorCode.FORBIDDEN)
+        }
+
         val galley: Gallery = galleryRepository.findByGalleryTypeAndName(postRequestDto.galleryType, postRequestDto.galleryName)
-        val member: Member = memberRepository.findById(SecurityUtil.getCurrentMemberId())
-            .orElseThrow { ApiException(ErrorCode.UNAUTHORIZED_SECURITY_CONTEXT) }
-        val post: Post = postRequestDto.toEntity(member, galley);
-        postRepository.save(post);
+
+        post.content = postRequestDto.content
+        post.title = postRequestDto.title
+        post.gallery = galley
     }
 
+    @Transactional
+    fun delete(postId: Long) {
+        val post: Post = postRepository.findById(postId).orElseThrow { ApiException(ErrorCode.NOT_FOUND) }
+        val member: Member = memberRepository.findById(SecurityUtil.getCurrentMemberId())
+            .orElseThrow { ApiException(ErrorCode.UNAUTHORIZED_SECURITY_CONTEXT) }
+
+        if (post.member.username != member.username) {
+            throw ApiException(ErrorCode.FORBIDDEN)
+        }
+
+        postRepository.delete(post)
+    }
 
 
 }

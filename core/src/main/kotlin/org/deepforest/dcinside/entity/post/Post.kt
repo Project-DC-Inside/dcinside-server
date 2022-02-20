@@ -19,15 +19,15 @@ class Post(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gallery_id")
-    val gallery : Gallery,
+    var gallery : Gallery,
 
     @Column(updatable = false)
     val nickname : String,
 
-    val title: String,
+    var title: String,
 
     @Column(name = "content", columnDefinition="text")
-    val content: String,
+    var content: String,
 
     @Column(updatable = false)
     val password: String,

@@ -19,16 +19,40 @@ class PostController(
     fun findPosts(
         @RequestParam(required = false) type: GalleryType? = null
     ): ResponseDto<List<PostResponseDto>> = ResponseDto.ok(
-        postService.findPost(type)
+        postService.findPosts(type)
     )
 
+    @GetMapping("/{postId}")
+    fun findPost(
+        @PathVariable("postId") postId: Long
+    ): ResponseDto<PostResponseDto> = ResponseDto.ok(
+        postService.findPost(postId)
+    )
+
+
     @PostMapping
-    fun addPosts(
-        @RequestBody postRequestDto : PostRequestDto
-    ) : ResponseDto<Unit>{
+    fun addPost(
+        @RequestBody postRequestDto: PostRequestDto
+    ): ResponseDto<Unit> {
         postService.add(postRequestDto);
         return ResponseDto.ok()
     }
 
+    @PutMapping("/{postId}")
+    fun editPost(
+        @PathVariable("postId") postId: Long,
+        @RequestBody postRequestDto: PostRequestDto
+    ): ResponseDto<Unit> {
+        postService.update(postId, postRequestDto);
+        return ResponseDto.ok();
+    }
+
+    @DeleteMapping("/{postId}")
+    fun deletePost(
+        @PathVariable("postId") postId: Long
+    ): ResponseDto<Unit> {
+        postService.delete(postId);
+        return ResponseDto.ok();
+    }
 
 }
