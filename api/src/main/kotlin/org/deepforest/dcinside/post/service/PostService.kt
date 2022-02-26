@@ -9,6 +9,7 @@ import org.deepforest.dcinside.exception.ApiException
 import org.deepforest.dcinside.gallery.GalleryRepository
 import org.deepforest.dcinside.gallery.findByGalleryId
 import org.deepforest.dcinside.member.MemberRepository
+import org.deepforest.dcinside.post.dto.PostAccessDto
 import org.deepforest.dcinside.post.dto.PostRequestDto
 import org.deepforest.dcinside.post.dto.PostResponseDto
 import org.deepforest.dcinside.post.repository.PostRepository
@@ -84,9 +85,8 @@ class PostService(
         val member: Member = memberRepository.findById(currentMemberId)
             .orElseThrow { ApiException(ErrorCode.UNAUTHORIZED_SECURITY_CONTEXT) }
         val postStatistics = postStatisticsService.findPostStatistics(postId)
-        val memberPostStatistics = memberPostStatisticsService.find(currentMemberId, postStatistics.id!!)
 
-        when (memberPostStatistics) {
+        when (val memberPostStatistics = memberPostStatisticsService.find(currentMemberId, postStatistics.id!!)) {
             null -> {
                 postStatisticsService.dislike(postId)
                 memberPostStatisticsService.addDislike(true, member, postStatistics)
@@ -112,24 +112,34 @@ class PostService(
         val member: Member = memberRepository.findById(currentMemberId)
             .orElseThrow { ApiException(ErrorCode.UNAUTHORIZED_SECURITY_CONTEXT) }
         val postStatistics = postStatisticsService.findPostStatistics(postId)
-        val memberPostStatistics = memberPostStatisticsService.find(currentMemberId, postStatistics.id!!)
 
-        if (memberPostStatistics == null) {
-            postStatisticsService.like(postId)
-            memberPostStatisticsService.addLike(true, member, postStatistics)
-        } else {
-            if (memberPostStatistics.disliked == true) {
-                throw ApiException(ErrorCode.CONFLICT)
-            }
-
-            if (memberPostStatistics.liked == true) {
-                postStatisticsService.cancelLike(postId)
-                memberPostStatistics.liked = false
-            } else {
+        when (val memberPostStatistics = memberPostStatisticsService.find(currentMemberId, postStatistics.id!!)) {
+            null -> {
                 postStatisticsService.like(postId)
-                memberPostStatistics.liked = true
+                memberPostStatisticsService.addLike(true, member, postStatistics)
+            }
+            else -> {
+                if (memberPostStatistics.disliked == true) {
+                    throw ApiException(ErrorCode.CONFLICT)
+                }
+
+                if (memberPostStatistics.liked == true) {
+                    postStatisticsService.cancelLike(postId)
+                    memberPostStatistics.liked = false
+                } else {
+                    postStatisticsService.like(postId)
+                    memberPostStatistics.liked = true
+                }
             }
         }
     }
 
+    fun access(postAccessDto: PostAccessDto): Boolean {
+        val postId = postAccessDto.postId
+        val password = postAccessDto.password
+
+        val post = postRepository.findById(postId).orElseThrow { ApiException(ErrorCode.NOT_FOUND) }
+
+        return post.password == password
+    }
 }

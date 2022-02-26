@@ -45,3 +45,8 @@ class PostRequestDto(
             title = title
         )
 }
+
+class PostAccessDto(
+    val postId: Long,
+    val password : String
+)
