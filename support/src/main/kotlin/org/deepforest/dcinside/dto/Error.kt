@@ -28,6 +28,7 @@ enum class ErrorCode(val detail: String) {
     NOT_FOUND("데이터를 찾을 수 없습니다."),
     BAD_REQUEST("잘못된 요청입니다."),
     CONFLICT("잘못된 데이터를 입력했습니다."),
+    DUPLICATE("중복 요청을 할 수 없습니다."),
 
     INTERNAL_SERVER_ERROR("예상하지 못한 에러가 발생했습니다."),
     ;

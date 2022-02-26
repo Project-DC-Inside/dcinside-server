@@ -32,4 +32,7 @@ class PostStatistics(
 
     @JoinColumn(name = "comment_count")
     var commentCount: Long = 0L,
+
+    @OneToMany(mappedBy = "postStatistics")
+    var memberPostStatistics: MutableList<MemberPostStatistics> = mutableListOf()
 )

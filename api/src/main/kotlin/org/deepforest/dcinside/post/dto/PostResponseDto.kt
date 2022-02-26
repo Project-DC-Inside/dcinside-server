@@ -4,6 +4,7 @@ import org.deepforest.dcinside.entity.gallery.Gallery
 import org.deepforest.dcinside.entity.gallery.GalleryType
 import org.deepforest.dcinside.entity.member.Member
 import org.deepforest.dcinside.entity.post.Post
+import org.deepforest.dcinside.entity.post.PostStatistics
 
 class PostResponseDto(
     val id: Long,
@@ -27,9 +28,7 @@ class PostResponseDto(
 }
 
 class PostRequestDto(
-    val id: Long,
-    val galleryType: GalleryType,
-    val galleryName: String,
+    val galleryId: Long,
     val nickname: String,
     val title: String,
     val content: String,
@@ -38,10 +37,10 @@ class PostRequestDto(
 
     fun toEntity(member: Member, gallery: Gallery): Post =
         Post(
-            password = password,
             gallery = gallery,
             member = member,
             nickname = nickname,
+            password = password,
             content = content,
             title = title
         )

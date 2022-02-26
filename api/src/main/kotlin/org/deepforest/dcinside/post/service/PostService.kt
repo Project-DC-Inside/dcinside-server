@@ -3,50 +3,54 @@ package org.deepforest.dcinside.post.service
 import org.deepforest.dcinside.common.SecurityUtil
 import org.deepforest.dcinside.dto.ErrorCode
 import org.deepforest.dcinside.entity.gallery.Gallery
-import org.deepforest.dcinside.entity.gallery.GalleryType
 import org.deepforest.dcinside.entity.member.Member
 import org.deepforest.dcinside.entity.post.Post
 import org.deepforest.dcinside.exception.ApiException
 import org.deepforest.dcinside.gallery.GalleryRepository
+import org.deepforest.dcinside.gallery.findByGalleryId
 import org.deepforest.dcinside.member.MemberRepository
 import org.deepforest.dcinside.post.dto.PostRequestDto
 import org.deepforest.dcinside.post.dto.PostResponseDto
 import org.deepforest.dcinside.post.repository.PostRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.stream.Collectors
 
-@Transactional(readOnly = true)
+@Transactional
 @Service
 class PostService(
     private val postRepository: PostRepository,
+    private val postStatisticsService: PostStatisticsService,
     private val galleryRepository: GalleryRepository,
-    private val memberRepository: MemberRepository
+    private val memberRepository: MemberRepository,
+    private val memberPostStatisticsService: MemberPostStatisticsService
 ) {
-    fun findPosts(galleryType: GalleryType?): List<PostResponseDto> =
-        postRepository.findByGalleryType(galleryType)
-            .stream()
+
+    @Transactional(readOnly = true)
+    fun findPostsByGalleryId(galleryId: Long?): List<PostResponseDto> =
+        postRepository.findByGalleryId(galleryId)
+            .asSequence()
             .map(PostResponseDto::from)
-            .collect(Collectors.toList())
+            .toList()
 
     fun findPost(postId: Long): PostResponseDto =
         postRepository.findById(postId)
             .orElseThrow { ApiException(ErrorCode.NOT_FOUND) }
             .let {
+                postStatisticsService.view(it.id!!)
                 PostResponseDto.from(it)
             }
 
 
-    @Transactional
     fun add(postRequestDto: PostRequestDto) {
-        val galley: Gallery = galleryRepository.findByGalleryTypeAndName(postRequestDto.galleryType, postRequestDto.galleryName)
+        val galley: Gallery = galleryRepository.findByGalleryId(postRequestDto.galleryId)
         val member: Member = memberRepository.findById(SecurityUtil.getCurrentMemberId())
             .orElseThrow { ApiException(ErrorCode.UNAUTHORIZED_SECURITY_CONTEXT) }
+
         val post: Post = postRequestDto.toEntity(member, galley)
         postRepository.save(post)
+        postStatisticsService.save(post)
     }
 
-    @Transactional
     fun update(postId: Long, postRequestDto: PostRequestDto) {
         val post: Post = postRepository.findById(postId).orElseThrow { ApiException(ErrorCode.NOT_FOUND) }
         val member: Member = memberRepository.findById(SecurityUtil.getCurrentMemberId())
@@ -56,14 +60,13 @@ class PostService(
             throw ApiException(ErrorCode.FORBIDDEN)
         }
 
-        val galley: Gallery = galleryRepository.findByGalleryTypeAndName(postRequestDto.galleryType, postRequestDto.galleryName)
+        val galley: Gallery = galleryRepository.findByGalleryId(postRequestDto.galleryId)
 
         post.content = postRequestDto.content
         post.title = postRequestDto.title
         post.gallery = galley
     }
 
-    @Transactional
     fun delete(postId: Long) {
         val post: Post = postRepository.findById(postId).orElseThrow { ApiException(ErrorCode.NOT_FOUND) }
         val member: Member = memberRepository.findById(SecurityUtil.getCurrentMemberId())
@@ -76,5 +79,57 @@ class PostService(
         postRepository.delete(post)
     }
 
+    fun dislikePost(postId: Long) {
+        val currentMemberId = SecurityUtil.getCurrentMemberId()
+        val member: Member = memberRepository.findById(currentMemberId)
+            .orElseThrow { ApiException(ErrorCode.UNAUTHORIZED_SECURITY_CONTEXT) }
+        val postStatistics = postStatisticsService.findPostStatistics(postId)
+        val memberPostStatistics = memberPostStatisticsService.find(currentMemberId, postStatistics.id!!)
+
+        when (memberPostStatistics) {
+            null -> {
+                postStatisticsService.dislike(postId)
+                memberPostStatisticsService.addDislike(true, member, postStatistics)
+            }
+            else -> {
+                if (memberPostStatistics.liked == true) {
+                    throw ApiException(ErrorCode.CONFLICT)
+                }
+
+                if (memberPostStatistics.disliked == true) {
+                    postStatisticsService.cancelDislike(postId)
+                    memberPostStatistics.disliked = false
+                } else {
+                    postStatisticsService.dislike(postId)
+                    memberPostStatistics.disliked = true
+                }
+            }
+        }
+    }
+
+    fun likePost(postId: Long) {
+        val currentMemberId = SecurityUtil.getCurrentMemberId()
+        val member: Member = memberRepository.findById(currentMemberId)
+            .orElseThrow { ApiException(ErrorCode.UNAUTHORIZED_SECURITY_CONTEXT) }
+        val postStatistics = postStatisticsService.findPostStatistics(postId)
+        val memberPostStatistics = memberPostStatisticsService.find(currentMemberId, postStatistics.id!!)
+
+        if (memberPostStatistics == null) {
+            postStatisticsService.like(postId)
+            memberPostStatisticsService.addLike(true, member, postStatistics)
+        } else {
+            if (memberPostStatistics.disliked == true) {
+                throw ApiException(ErrorCode.CONFLICT)
+            }
+
+            if (memberPostStatistics.liked == true) {
+                postStatisticsService.cancelLike(postId)
+                memberPostStatistics.liked = false
+            } else {
+                postStatisticsService.like(postId)
+                memberPostStatistics.liked = true
+            }
+        }
+    }
 
 }
