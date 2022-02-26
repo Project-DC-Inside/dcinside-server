@@ -1,7 +1,6 @@
 package org.deepforest.dcinside.post.controller
 
 import io.swagger.v3.oas.annotations.Operation
-import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.deepforest.dcinside.dto.ResponseDto
 import org.deepforest.dcinside.post.dto.PostAccessDto
@@ -37,47 +36,33 @@ class PostController(
     @PostMapping
     fun addPost(
         @RequestBody postRequestDto: PostRequestDto
-    ): ResponseDto<Unit> {
-        postService.add(postRequestDto)
-        return ResponseDto.ok()
-    }
+    ): ResponseDto<Unit> = ResponseDto.ok(postService.add(postRequestDto))
 
     @Operation(summary = "Post 수정 요청")
     @PutMapping("/{postId}")
     fun editPost(
         @PathVariable("postId") postId: Long,
         @RequestBody postRequestDto: PostRequestDto
-    ): ResponseDto<Unit> {
-        postService.update(postId, postRequestDto);
-        return ResponseDto.ok();
-    }
+    ): ResponseDto<Unit> = ResponseDto.ok(postService.update(postId, postRequestDto))
 
     @Operation(summary = "Post 삭제 요청")
     @DeleteMapping("/{postId}")
     fun deletePost(
         @PathVariable("postId") postId: Long
-    ): ResponseDto<Unit> {
-        postService.delete(postId)
-        return ResponseDto.ok()
-    }
+    ): ResponseDto<Unit> = ResponseDto.ok(postService.delete(postId))
 
     @Operation(summary = "Post 싫어요 버튼을 누를 때")
     @PutMapping("/{postId}/dislike")
     fun dislikePost(
         @PathVariable("postId") postId: Long
-    ): ResponseDto<Unit> {
-        postService.dislikePost(postId)
-        return ResponseDto.ok()
-    }
+    ): ResponseDto<Unit> = ResponseDto.ok(postService.dislikePost(postId))
+
 
     @Operation(summary = "Post 좋아요 버튼을 누를 때")
     @PutMapping("/{postId}/like")
     fun likePost(
         @PathVariable("postId") postId: Long
-    ): ResponseDto<Unit> {
-        postService.likePost(postId)
-        return ResponseDto.ok()
-    }
+    ): ResponseDto<Unit> = ResponseDto.ok(postService.likePost(postId))
 
     @Operation(summary = "접근 가능한지 체크를 위한  Post 비밀번호 확인")
     @PutMapping("/access")
