@@ -115,7 +115,7 @@ class GalleryServiceTest : ServiceTestBase() {
         @Test
         @DisplayName("갤러리 아이디가 없을 때 삭제하려고 하면 에러")
         fun testDeleteFailWhenNoElement() {
-            assertThatExceptionOfType(EmptyResultDataAccessException::class.java)
+            assertThatExceptionOfType(NoSuchElementException::class.java)
                 .isThrownBy { galleryService.delete(0L) }
         }
     }
