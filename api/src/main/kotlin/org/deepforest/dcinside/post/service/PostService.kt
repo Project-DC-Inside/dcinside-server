@@ -9,7 +9,6 @@ import org.deepforest.dcinside.exception.ApiException
 import org.deepforest.dcinside.gallery.GalleryRepository
 import org.deepforest.dcinside.gallery.findByGalleryId
 import org.deepforest.dcinside.member.MemberRepository
-import org.deepforest.dcinside.post.dto.PostAccessDto
 import org.deepforest.dcinside.post.dto.PostRequestDto
 import org.deepforest.dcinside.post.dto.PostResponseDto
 import org.deepforest.dcinside.post.repository.PostRepository
@@ -132,14 +131,5 @@ class PostService(
                 }
             }
         }
-    }
-
-    fun access(postAccessDto: PostAccessDto): Boolean {
-        val postId = postAccessDto.postId
-        val password = postAccessDto.password
-
-        val post = postRepository.findById(postId).orElseThrow { ApiException(ErrorCode.NOT_FOUND) }
-
-        return post.password == password
     }
 }

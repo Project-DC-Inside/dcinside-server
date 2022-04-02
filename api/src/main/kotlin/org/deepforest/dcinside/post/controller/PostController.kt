@@ -3,7 +3,6 @@ package org.deepforest.dcinside.post.controller
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.deepforest.dcinside.dto.ResponseDto
-import org.deepforest.dcinside.post.dto.PostAccessDto
 import org.deepforest.dcinside.post.dto.PostRequestDto
 import org.deepforest.dcinside.post.dto.PostResponseDto
 import org.deepforest.dcinside.post.service.PostService
@@ -63,11 +62,4 @@ class PostController(
     fun likePost(
         @PathVariable("postId") postId: Long
     ): ResponseDto<Unit> = ResponseDto.ok(postService.likePost(postId))
-
-    @Operation(summary = "접근 가능한지 체크를 위한  Post 비밀번호 확인")
-    @PutMapping("/access")
-    fun accessPost(
-        @RequestBody postAccessDto: PostAccessDto
-    ): ResponseDto<Boolean> = ResponseDto.ok(postService.access(postAccessDto))
-
 }
