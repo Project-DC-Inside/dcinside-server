@@ -47,10 +47,10 @@ class PostRequestDto(
 }
 
 class PostStatisticsDto(
-    val viewCount: Long = 0L,
-    val likeCount: Long = 0L,
-    val dislikeCount: Long = 0L,
-    val commentCount: Long = 0L
+    val viewCount: Long,
+    val likeCount: Long,
+    val dislikeCount: Long,
+    val commentCount: Long
 ) {
     companion object {
         fun from(postStatistics: PostStatistics) =

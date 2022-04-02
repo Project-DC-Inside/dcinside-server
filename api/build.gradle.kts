@@ -16,10 +16,6 @@ dependencies {
 
     // aws
     implementation("com.amazonaws:aws-java-sdk-s3:1.11.478")
-
-    // mapstruct
-    implementation("org.mapstruct:mapstruct:1.4.2.Final")
-    annotationProcessor("org.mapstruct:mapstruct-processor:1.4.2.Final")
 }
 
 tasks {
