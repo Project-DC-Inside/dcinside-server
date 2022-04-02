@@ -21,15 +21,18 @@ class Member(
     @Column(name = "username", nullable = false)
     val username: String,
 
+    @Column(name = "email")
+    val email: String,
+
+    @Column(name = "nickname")
+    val nickname: String,
+
     @Column(name = "password")
     val password: String,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "member_role")
     val role: MemberRole,
-
-    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = [CascadeType.PERSIST, CascadeType.REMOVE])
-    var memberDetail: MemberDetail? = null,
 
     @OneToMany(mappedBy = "member")
     val posts: MutableList<Post> = mutableListOf(),
