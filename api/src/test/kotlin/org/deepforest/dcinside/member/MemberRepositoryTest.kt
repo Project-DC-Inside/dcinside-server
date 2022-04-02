@@ -1,8 +1,7 @@
-package org.deepforest.dcinside.repository
+package org.deepforest.dcinside.member
 
 import org.deepforest.dcinside.entity.member.Member
 import org.deepforest.dcinside.entity.member.MemberRole
-import org.deepforest.dcinside.member.MemberRepository
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
@@ -19,7 +18,7 @@ class MemberRepositoryTest {
     @Test
     fun test() {
         memberRepository.save(
-            Member(username = "woody", password = "12345", role = MemberRole.ROLE_NONE)
+            Member(username = "woody", email = "woody@kakao.net", nickname = "woody", password = "12345", role = MemberRole.ROLE_NONE)
         )
     }
 }

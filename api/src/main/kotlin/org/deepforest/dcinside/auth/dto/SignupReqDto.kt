@@ -8,19 +8,12 @@ data class SignupReqDto(
     private val password: String,
     private val email: String,
     private val nickname: String,
-    private val nicknameType: NicknameType
 ) {
-    fun toMember(passwordEncoder: PasswordEncoder): Member {
-        return Member(
-            username = username,
-            password = passwordEncoder.encode(password),
-            role = MemberRole.ROLE_BASIC
-        ).apply {
-            memberDetail = MemberDetail(
-                email = email,
-                nickname = Nickname(nickname, nicknameType),
-                member = this
-            )
-        }
-    }
+    fun toMember(passwordEncoder: PasswordEncoder) = Member(
+        username = username,
+        email = email,
+        nickname = nickname,
+        password = passwordEncoder.encode(password),
+        role = MemberRole.ROLE_BASIC
+    )
 }
