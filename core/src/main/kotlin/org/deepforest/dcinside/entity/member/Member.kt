@@ -33,7 +33,7 @@ class Member(
     val role: MemberRole,
 
     @OneToMany(mappedBy = "member")
-    val posts: MutableList<Post> = mutableListOf(),
+    val posts: MutableList<Post> = mutableListOf()
 ) : BaseEntity()
 
 enum class MemberRole {

@@ -1,6 +1,5 @@
 package org.deepforest.dcinside.post
 
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.*
 import org.deepforest.dcinside.entity.gallery.Gallery
 import org.deepforest.dcinside.entity.gallery.GalleryType

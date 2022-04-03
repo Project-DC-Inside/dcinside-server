@@ -48,8 +48,4 @@ class PostForMemberService(
 
         postRepository.delete(post)
     }
-
-    fun dislikePost(postId: Long) {
-
-    }
 }
