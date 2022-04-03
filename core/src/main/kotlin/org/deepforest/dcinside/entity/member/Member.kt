@@ -1,9 +1,7 @@
 package org.deepforest.dcinside.entity.member
 
 import org.deepforest.dcinside.entity.BaseEntity
-import org.deepforest.dcinside.entity.post.MemberPostStatistics
 import org.deepforest.dcinside.entity.post.Post
-import org.deepforest.dcinside.entity.post.PostStatistics
 import javax.persistence.*
 
 
@@ -36,11 +34,8 @@ class Member(
 
     @OneToMany(mappedBy = "member")
     val posts: MutableList<Post> = mutableListOf(),
-
-    @OneToMany(mappedBy = "member")
-    val memberPostStatistics: MutableList<MemberPostStatistics> = mutableListOf(),
 ) : BaseEntity()
 
 enum class MemberRole {
-    ROLE_NONE, ROLE_BASIC, ROLE_ORANGE, ROLE_BLUE, ROLE_ADMIN
+    ROLE_FLEXIBLE, ROLE_FIXED, ROLE_ORANGE, ROLE_BLUE, ROLE_ADMIN
 }
