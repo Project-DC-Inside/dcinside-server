@@ -62,6 +62,8 @@ class SecurityConfig(
             .and()
             .authorizeRequests()
             .antMatchers("/api/**/auth/**").permitAll()
+            .antMatchers("/api/**/posts/non-member/**").permitAll()
+            .antMatchers(HttpMethod.GET,"/api/**/posts/**").permitAll()
             .antMatchers(HttpMethod.GET,"/api/**/galleries").permitAll()
             .antMatchers("/api/**/galleries/**").hasRole("ADMIN")
             .anyRequest().authenticated() // 나머지 API 는 전부 인증 필요
