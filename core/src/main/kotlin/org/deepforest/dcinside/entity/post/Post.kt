@@ -13,26 +13,34 @@ class Post(
     @Column(name = "post_id")
     val id: Long? = null,
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "member_id")
-    val member: Member,
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gallery_id")
-    var gallery: Gallery,
-
-    @Column(updatable = false)
+    @Column(name = "nickname", updatable = false)
     val nickname: String,
 
+    @Column(name = "title")
     var title: String,
 
     @Column(name = "content", columnDefinition = "text")
     var content: String,
 
-    @Column(updatable = false)
-    val password: String,
+    @Column(name = "password", updatable = false)
+    val password: String? = null,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    val member: Member? = null,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gallery_id")
+    val gallery: Gallery,
+
+) : BaseEntity() {
 
     @OneToOne(mappedBy = "post", fetch = FetchType.LAZY, cascade = [CascadeType.PERSIST, CascadeType.REMOVE])
-    var statistics: PostStatistics? = null
-) : BaseEntity()
+    val statistics: PostStatistics = PostStatistics(post = this)
 
+    val writtenByNonMember: Boolean get() = (member == null)
+
+    fun wasNotWrittenBy(other: Member): Boolean = (other == this.member)
+
+    fun isSamePassword(otherPassword: String): Boolean = (otherPassword == this.password)
+}
