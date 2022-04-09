@@ -14,6 +14,6 @@ data class SignupReqDto(
         email = email,
         nickname = nickname,
         password = passwordEncoder.encode(password),
-        role = MemberRole.ROLE_BASIC
+        role = MemberRole.ROLE_FIXED
     )
 }
