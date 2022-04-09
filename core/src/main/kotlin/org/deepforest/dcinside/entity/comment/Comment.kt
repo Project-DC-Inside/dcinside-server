@@ -17,7 +17,7 @@ class Comment(
     val nickname: String,
 
     @Column(name = "content", columnDefinition = "text")
-    var content: String,
+    val content: String,
 
     @Column(name = "password", updatable = false)
     val password: String? = null,
