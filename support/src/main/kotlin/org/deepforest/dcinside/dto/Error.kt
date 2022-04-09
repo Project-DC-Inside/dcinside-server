@@ -23,10 +23,12 @@ enum class ErrorCode(val detail: String) {
     NOT_FOUND_MEMBER("존재하지 않는 ID 입니다."),
     CONFLICT_USERNAME("중복된 ID 가 존재합니다."),
     MISMATCH_PASSWORD("비밀번호가 일치하지 않습니다."),
+    FORBIDDEN("권한이 없습니다"),
 
     NOT_FOUND("데이터를 찾을 수 없습니다."),
     BAD_REQUEST("잘못된 요청입니다."),
     CONFLICT("잘못된 데이터를 입력했습니다."),
+    DUPLICATE("중복 요청을 할 수 없습니다."),
 
     INTERNAL_SERVER_ERROR("예상하지 못한 에러가 발생했습니다."),
     ;
