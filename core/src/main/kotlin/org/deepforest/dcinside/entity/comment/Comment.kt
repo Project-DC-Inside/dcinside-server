@@ -35,8 +35,6 @@ class Comment(
     val baseComment: Comment? = null
 ) : BaseEntity() {
 
-    fun writtenBy(other: Member): Boolean = (other == this.member)
-
     // 회원이 작성한 댓글
     constructor(content: String, post: Post, member: Member) : this(
         id = null,
@@ -58,4 +56,8 @@ class Comment(
         member = null,
         baseComment = null
     )
+
+    fun writtenBy(other: Member): Boolean = (other == this.member)
+
+    fun isSamePassword(otherPassword: String): Boolean = (otherPassword == this.password)
 }
