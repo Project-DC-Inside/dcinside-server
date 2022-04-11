@@ -32,30 +32,37 @@ class Comment(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "base_comment_id")
-    val baseComment: Comment? = null
+    val baseComment: Comment? = null,
+
+    @OneToMany(mappedBy = "baseComment", fetch = FetchType.LAZY)
+    val replies: MutableList<Comment> = mutableListOf()
 ) : BaseEntity() {
 
     // 회원이 작성한 댓글
-    constructor(content: String, post: Post, member: Member) : this(
+    constructor(content: String, post: Post, member: Member, baseComment: Comment? = null) : this(
         id = null,
         nickname = member.nickname,
         content = content,
         password = null,
         post = post,
         member = member,
-        baseComment = null
+        baseComment = baseComment
     )
 
     // 비회원이 작성한 댓글
-    constructor(content: String, post: Post, nickname: String, password: String) : this(
+    constructor(content: String, post: Post, nickname: String, password: String, baseComment: Comment? = null) : this(
         id = null,
         nickname = nickname,
         content = content,
         password = password,
         post = post,
         member = null,
-        baseComment = null
+        baseComment = baseComment
     )
+
+    init {
+        this.baseComment?.replies?.add(this)
+    }
 
     fun writtenBy(other: Member): Boolean = (other == this.member)
 
