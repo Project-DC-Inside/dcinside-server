@@ -56,6 +56,33 @@ class CommentForNonMemberServiceTest {
     }
 
     @Test
+    @DisplayName("댓글에 비회원이 답글 저장")
+    fun testSaveReply() {
+        // given
+        val gallery = Gallery(null, GalleryType.MAJOR, "major-gallery")
+        val post = Post(null, "nickname2", "title", "content", "password", member = null, gallery)
+        val comment = Comment("comment-content", post, "comment-nickname", "comment-password")
+        galleryRepository.saveAndFlush(gallery)
+        postRepository.saveAndFlush(post)
+        commentRepository.saveAndFlush(comment)
+
+        // when
+        val dto = CommentWrittenByNonMemberDto("reply-content", "reply-nickname", "reply-password", baseCommentId = comment.id)
+        val savedCommentId = commentForNonMemberService.saveComment(dto, post.id!!)
+
+        // then
+        val findComment = commentRepository.findByCommentId(savedCommentId)
+        assertThat(findComment.member).isNull()
+        assertThat(findComment.nickname).isEqualTo(dto.nickname)
+        assertThat(findComment.password).isEqualTo(dto.password)
+        assertThat(findComment.post).isEqualTo(post)
+        assertThat(findComment.baseComment).isEqualTo(comment)
+
+        assertThat(comment.replies).isNotEmpty
+        assertThat(comment.replies).contains(findComment)
+    }
+
+    @Test
     @DisplayName("비회원 댓글 삭제")
     fun testDeleteComment() {
         // given

@@ -22,7 +22,8 @@ class CommentForMemberService(
     fun saveComment(dto: CommentWrittenByMemberDto, postId: Long, memberId: Long): Long {
         val member = memberRepository.findByMemberId(memberId)
         val post = postRepository.findByPostId(postId)
-        val comment = dto.toEntity(post, member)
+        val baseComment = dto.baseCommentId?.let { commentRepository.findByCommentId(it) }
+        val comment = dto.toEntity(post, member, baseComment)
         return commentRepository.save(comment).id!!
     }
 

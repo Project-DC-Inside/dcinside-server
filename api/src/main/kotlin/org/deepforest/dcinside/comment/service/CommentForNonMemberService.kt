@@ -17,7 +17,8 @@ class CommentForNonMemberService(
 ) {
     fun saveComment(dto: CommentWrittenByNonMemberDto, postId: Long): Long {
         val post = postRepository.findByPostId(postId)
-        val comment = dto.toEntity(post)
+        val baseComment = dto.baseCommentId?.let { commentRepository.findByCommentId(it) }
+        val comment = dto.toEntity(post, baseComment)
         return commentRepository.save(comment).id!!
     }
 

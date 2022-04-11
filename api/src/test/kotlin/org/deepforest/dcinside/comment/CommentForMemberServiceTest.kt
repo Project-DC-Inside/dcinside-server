@@ -65,6 +65,36 @@ class CommentForMemberServiceTest {
         assertThat(findComment.post).isEqualTo(post)
     }
 
+    @Test
+    @DisplayName("회원이 특정 댓글에 답글 작성")
+    fun testSaveReplyByRealMember() {
+        // given
+        val member = Member(null, "username", "email", "nickname", "password", MemberRole.ROLE_FIXED)
+        val gallery = Gallery(null, GalleryType.MAJOR, "major-gallery")
+        val post = Post(null, "nickname2", "title", "content", password = null, member, gallery)
+        val comment = Comment("comment-content", post, member)
+        memberRepository.saveAndFlush(member)
+        galleryRepository.saveAndFlush(gallery)
+        postRepository.saveAndFlush(post)
+        commentRepository.saveAndFlush(comment)
+
+        // when
+        val dto = CommentWrittenByMemberDto("reply-content", baseCommentId = comment.id)
+        val savedCommentId = commentForMemberService.saveComment(dto, post.id!!, member.id!!)
+
+        // then
+        val findComment = commentRepository.findByCommentId(savedCommentId)
+        assertThat(findComment.member).isEqualTo(member)
+        assertThat(findComment.nickname).isEqualTo(member.nickname)
+        assertThat(findComment.password).isNull()
+        assertThat(findComment.content).isEqualTo(dto.content)
+        assertThat(findComment.post).isEqualTo(post)
+        assertThat(findComment.baseComment).isEqualTo(comment)
+
+        assertThat(comment.replies).isNotEmpty
+        assertThat(comment.replies).contains(findComment)
+    }
+
     @Nested
     @DisplayName("댓글 삭제 관련 성공/실패 테스트")
     inner class DeleteComment {

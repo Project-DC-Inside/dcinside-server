@@ -7,7 +7,7 @@ import javax.persistence.*
 
 @Table(name = "comment", indexes = [Index(columnList = "created_at")])
 @Entity
-class Comment(
+class Comment private constructor(
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")

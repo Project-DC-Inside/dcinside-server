@@ -7,17 +7,21 @@ import org.deepforest.dcinside.helper.TimeFormatHelper
 import org.deepforest.dcinside.member.MemberDto
 
 class CommentWrittenByMemberDto(
-    val content: String
+    val content: String,
+    val baseCommentId: Long? = null
 ) {
-    fun toEntity(post: Post, member: Member) = Comment(content, post, member)
+    fun toEntity(post: Post, member: Member, baseComment: Comment? = null) =
+        Comment(content, post, member, baseComment)
 }
 
 class CommentWrittenByNonMemberDto(
     val content: String,
     val nickname: String,
-    val password: String
+    val password: String,
+    val baseCommentId: Long? = null
 ) {
-    fun toEntity(post: Post) = Comment(content, post, nickname = nickname, password = password)
+    fun toEntity(post: Post, baseComment: Comment? = null) =
+        Comment(content, post, nickname = nickname, password = password, baseComment)
 }
 
 class CommentAccessDto(
