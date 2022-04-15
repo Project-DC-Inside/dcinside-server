@@ -67,4 +67,6 @@ class Comment private constructor(
     fun writtenBy(other: Member): Boolean = (other == this.member)
 
     fun isSamePassword(otherPassword: String): Boolean = (otherPassword == this.password)
+
+    fun writtenIn(targetPost: Post): Boolean = (targetPost == this.post)
 }
