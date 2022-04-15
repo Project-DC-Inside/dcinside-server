@@ -30,7 +30,7 @@ class CommentAccessDto(
 )
 
 class CommentResponseDto(
-    val commentId: Long,
+    val id: Long,
     val content: String,
     val createdAt: String,
     val updatedAt: String,
@@ -38,7 +38,7 @@ class CommentResponseDto(
     val writer: MemberDto
 ) {
     constructor(comment: Comment) : this(
-        commentId = comment.id!!,
+        id = comment.id!!,
         content = comment.content,
         TimeFormatHelper.from(comment.createdAt),
         TimeFormatHelper.from(comment.updatedAt),
