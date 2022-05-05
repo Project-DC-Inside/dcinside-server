@@ -31,6 +31,12 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
         return ResponseDto.fail(ErrorCode.BAD_REQUEST, e.message)
     }
 
+    @ExceptionHandler(IllegalStateException::class)
+    protected fun handleIllegalStateException(e: IllegalStateException): ResponseDto<Unit> {
+        logger.error("IllegalStateException message", e)
+        return ResponseDto.fail(ErrorCode.BAD_REQUEST, e.message)
+    }
+
     @ExceptionHandler(NoSuchElementException::class)
     protected fun handleNoSuchElementException(e: NoSuchElementException): ResponseDto<Unit> {
         logger.error("message", e)
