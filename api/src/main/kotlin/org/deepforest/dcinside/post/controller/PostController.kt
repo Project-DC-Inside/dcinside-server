@@ -41,18 +41,20 @@ class PostController(
     @PostMapping
     fun savePostForMember(
         @RequestBody postWrittenByMemberDto: PostWrittenByMemberDto
-    ): ResponseDto<Long> = ResponseDto.ok(
+    ): ResponseDto<Unit> {
         postForMemberService.savePost(postWrittenByMemberDto, SecurityUtil.getCurrentMemberId())
-    )
+        return ResponseDto.ok()
+    }
 
     @Operation(summary = "회원의 Post 수정 요청")
     @PutMapping("/{postId}")
     fun updatePostForMember(
         @PathVariable("postId") postId: Long,
         @RequestBody postUpdateDto: PostUpdateDto
-    ): ResponseDto<Long> = ResponseDto.ok(
+    ): ResponseDto<Unit> {
         postForMemberService.updatePost(postId, postUpdateDto, SecurityUtil.getCurrentMemberId())
-    )
+        return ResponseDto.ok()
+    }
 
     @Operation(summary = "회원의 Post 삭제 요청")
     @DeleteMapping("/{postId}")
@@ -67,18 +69,20 @@ class PostController(
     @PostMapping("/non-member")
     fun savePostForNonMember(
         @RequestBody postWrittenByNonMemberDto: PostWrittenByNonMemberDto
-    ): ResponseDto<Long> = ResponseDto.ok(
+    ): ResponseDto<Unit> {
         postForNonMemberService.savePost(postWrittenByNonMemberDto)
-    )
+        return ResponseDto.ok()
+    }
 
     @Operation(summary = "비회원의 Post 수정 요청")
     @PutMapping("/non-member/{postId}")
     fun updatePostForNonMember(
         @PathVariable("postId") postId: Long,
         @RequestBody postUpdateDto: PostUpdateDto
-    ): ResponseDto<Long> = ResponseDto.ok(
+    ): ResponseDto<Unit> {
         postForNonMemberService.updatePost(postId, postUpdateDto)
-    )
+        return ResponseDto.ok()
+    }
 
     @Operation(summary = "비회원의 Post 삭제 요청")
     @DeleteMapping("/non-member/{postId}")
