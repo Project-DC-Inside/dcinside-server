@@ -36,9 +36,10 @@ class CommentController(
     fun saveCommentForMember(
         @PathVariable postId: Long,
         @RequestBody dto: CommentWrittenByMemberDto
-    ): ResponseDto<Long> = ResponseDto.ok(
+    ): ResponseDto<Unit> {
         commentForMemberService.saveComment(dto, postId, SecurityUtil.getCurrentMemberId())
-    )
+        return ResponseDto.ok()
+    }
 
     @Operation(summary = "회원이 특정 게시글에 단 댓글 삭제")
     @DeleteMapping("/comments/{commentId}")
@@ -54,9 +55,10 @@ class CommentController(
     fun saveCommentForNonMember(
         @PathVariable postId: Long,
         @RequestBody dto: CommentWrittenByNonMemberDto
-    ): ResponseDto<Long> = ResponseDto.ok(
+    ): ResponseDto<Unit> {
         commentForNonMemberService.saveComment(dto, postId)
-    )
+        return ResponseDto.ok()
+    }
 
     @Operation(summary = "비회원이 특정 게시글에 단 댓글 삭제")
     @DeleteMapping("/comments/non-member/{commentId}")
