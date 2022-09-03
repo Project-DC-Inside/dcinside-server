@@ -9,6 +9,19 @@ class MemberDto(
     val nickname: String,
     val username: String? = null
 ) {
+    // 회원
+    constructor(member: Member) : this(
+        memberType = MemberType.of(member.role),
+        nickname = member.nickname,
+        username = member.username
+    )
+
+    // 비회원
+    constructor(nickname: String) : this(
+        memberType = MemberType.NONE,
+        nickname = nickname
+    )
+
     companion object {
         // 회원
         fun from(member: Member) = MemberDto(
