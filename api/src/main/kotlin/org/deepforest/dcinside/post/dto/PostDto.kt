@@ -3,6 +3,7 @@ package org.deepforest.dcinside.post.dto
 import org.deepforest.dcinside.entity.gallery.Gallery
 import org.deepforest.dcinside.entity.member.Member
 import org.deepforest.dcinside.entity.post.Post
+import org.deepforest.dcinside.entity.post.PostImage
 import org.deepforest.dcinside.entity.post.PostStatistics
 import org.deepforest.dcinside.helper.TimeFormatHelper
 import org.deepforest.dcinside.member.MemberDto
@@ -11,6 +12,7 @@ class PostWrittenByMemberDto(
     val galleryId: Long,
     val title: String,
     val content: String,
+    val images: List<PostImageDto>
 ) {
     fun toEntity(gallery: Gallery, member: Member) = Post(
         title = title,
@@ -18,7 +20,9 @@ class PostWrittenByMemberDto(
         nickname = member.nickname,
         member = member,
         gallery = gallery
-    )
+    ).also { post ->
+        post.images.addAll(this.images.map { it.toEntity(post) })
+    }
 }
 
 class PostWrittenByNonMemberDto(
@@ -27,6 +31,7 @@ class PostWrittenByNonMemberDto(
     val content: String,
     val nickname: String,
     val password: String,
+    val images: List<PostImageDto>
 ) {
     fun toEntity(gallery: Gallery) = Post(
         title = title,
@@ -34,7 +39,9 @@ class PostWrittenByNonMemberDto(
         nickname = nickname,
         password = password,
         gallery = gallery
-    )
+    ).also { post ->
+        post.images.addAll(this.images.map { it.toEntity(post) })
+    }
 }
 
 class PostUpdateDto(
@@ -56,6 +63,7 @@ class PostResponseDto(
     val postStatistics: PostStatisticsDto,
     val writer: MemberDto,
     var content: String?,
+    val images: List<PostImageDto>
 ) {
     companion object {
         fun from(
@@ -69,7 +77,8 @@ class PostResponseDto(
             TimeFormatHelper.from(post.updatedAt),
             PostStatisticsDto.from(post.statistics),
             if (post.writtenByNonMember) MemberDto.from(post.nickname) else MemberDto.from(post.member!!),
-            if (needContent) post.content else null
+            if (needContent) post.content else null,
+            post.images.map { PostImageDto.from(it) }
         )
     }
 }
@@ -88,4 +97,22 @@ class PostStatisticsDto(
             statistics.commentCount
         )
     }
+}
+
+class PostImageDto(
+    val number: Int,
+    val url: String,
+) {
+    companion object {
+        fun from(postImage: PostImage) = PostImageDto(
+            postImage.number,
+            postImage.url
+        )
+    }
+
+    fun toEntity(post: Post) = PostImage(
+        number = number,
+        url = url,
+        post = post
+    )
 }

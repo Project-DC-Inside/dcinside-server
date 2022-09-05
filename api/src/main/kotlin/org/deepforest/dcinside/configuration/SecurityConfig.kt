@@ -63,6 +63,7 @@ class SecurityConfig(
             .authorizeRequests()
             .antMatchers("/api/*/auth/**").permitAll()
             .antMatchers("/api/**/non-member/**").permitAll()
+            .antMatchers("/api/*/images/**").permitAll()
             .antMatchers(HttpMethod.GET,"/api/*/comments").permitAll()
             .antMatchers(HttpMethod.GET,"/api/*/posts/**").permitAll()
             .antMatchers(HttpMethod.GET,"/api/*/galleries").permitAll()

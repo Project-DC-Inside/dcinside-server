@@ -33,6 +33,9 @@ class Post(
     @JoinColumn(name = "gallery_id")
     val gallery: Gallery,
 
+    @OneToMany(mappedBy = "post", cascade = [CascadeType.ALL])
+    val images: MutableList<PostImage> = mutableListOf()
+
 ) : BaseEntity() {
 
     @OneToOne(mappedBy = "post", fetch = FetchType.LAZY, cascade = [CascadeType.PERSIST, CascadeType.REMOVE])

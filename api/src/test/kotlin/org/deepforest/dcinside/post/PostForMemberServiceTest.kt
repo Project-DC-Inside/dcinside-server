@@ -48,7 +48,7 @@ class PostForMemberServiceTest {
         galleryRepository.saveAndFlush(gallery)
 
         // when
-        val dto = PostWrittenByMemberDto(gallery.id!!, "title", "content")
+        val dto = PostWrittenByMemberDto(gallery.id!!, "title", "content", mutableListOf())
         val savedPostId = postForMemberService.savePost(dto, member.id!!)
 
         // then
