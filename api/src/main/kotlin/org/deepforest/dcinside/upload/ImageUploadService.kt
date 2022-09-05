@@ -2,6 +2,7 @@ package org.deepforest.dcinside.upload
 
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.CannedAccessControlList
+import com.amazonaws.services.s3.model.ObjectMetadata
 import com.amazonaws.services.s3.model.PutObjectRequest
 import org.apache.commons.lang3.RandomStringUtils
 import org.springframework.beans.factory.annotation.Value
@@ -23,10 +24,16 @@ class ImageUploadService(
         val fileName = createFileName(path, file.contentType!!)
         return client.run {
             putObject(
-                PutObjectRequest(bucket, fileName, file.inputStream, null)
+                PutObjectRequest(bucket, fileName, file.inputStream, getObjectMetadata(file))
                     .withCannedAcl(CannedAccessControlList.PublicRead)
             )
             this.getUrl(bucket, fileName).toString()
+        }
+    }
+
+    private fun getObjectMetadata(file: MultipartFile): ObjectMetadata {
+        return ObjectMetadata().apply {
+            this.contentType = file.contentType
         }
     }
 

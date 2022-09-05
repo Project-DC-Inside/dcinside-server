@@ -38,7 +38,7 @@ class PostForNonMemberServiceTest {
         galleryRepository.saveAndFlush(gallery)
 
         // when
-        val dto = PostWrittenByNonMemberDto(gallery.id!!, "title", "content", "nickname", "password")
+        val dto = PostWrittenByNonMemberDto(gallery.id!!, "title", "content", "nickname", "password", mutableListOf())
         val savedPostId = postForNonMemberService.savePost(dto)
 
         // then
