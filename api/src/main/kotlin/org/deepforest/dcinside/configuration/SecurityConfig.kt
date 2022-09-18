@@ -61,6 +61,8 @@ class SecurityConfig(
             // auth API 는 토큰이 없는 상태에서 요청이 들어오기 때문에 permitAll 설정
             .and()
             .authorizeRequests()
+            .antMatchers("/api/*/members/me").hasAnyRole("USER", "ADMIN")
+            .antMatchers("/api/*/members/**").permitAll()
             .antMatchers("/api/*/auth/**").permitAll()
             .antMatchers("/api/**/non-member/**").permitAll()
             .antMatchers("/api/*/images/**").permitAll()

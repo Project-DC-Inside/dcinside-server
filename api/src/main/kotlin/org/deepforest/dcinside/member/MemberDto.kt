@@ -38,6 +38,22 @@ class MemberDto(
     }
 }
 
+class MemberInfoDto(
+    val memberType: MemberType,
+    val nickname: String,
+    val username: String,
+    val email: String
+) {
+    companion object {
+        fun from(member: Member) = MemberInfoDto(
+            MemberType.of(member.role),
+            member.nickname,
+            member.username,
+            member.email
+        )
+    }
+}
+
 enum class MemberType {
     NONE, FLEXIBLE, FIXED, ORANGE, BLUE, ADMIN;
 
