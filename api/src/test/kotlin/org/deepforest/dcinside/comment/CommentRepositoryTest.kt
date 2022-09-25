@@ -1,6 +1,7 @@
 package org.deepforest.dcinside.comment
 
-import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
+import org.deepforest.dcinside.RepositoryTest
 import org.deepforest.dcinside.comment.repository.CommentRepository
 import org.deepforest.dcinside.comment.repository.findByPostWithPaging
 import org.deepforest.dcinside.entity.comment.Comment
@@ -14,27 +15,15 @@ import org.deepforest.dcinside.member.MemberRepository
 import org.deepforest.dcinside.post.repository.PostRepository
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.*
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = Replace.NONE)
-class CommentRepositoryTest {
 
-    @Autowired
-    private lateinit var commentRepository: CommentRepository
-
-    @Autowired
-    private lateinit var memberRepository: MemberRepository
-
-    @Autowired
-    private lateinit var postRepository: PostRepository
-
-    @Autowired
-    private lateinit var galleryRepository: GalleryRepository
-
+@RepositoryTest
+class CommentRepositoryTest(
+    private val commentRepository: CommentRepository,
+    private val memberRepository: MemberRepository,
+    private val postRepository: PostRepository,
+    private val galleryRepository: GalleryRepository,
+) {
     @Test
     @DisplayName("회원의 댓글 생성/조회 성공")
     fun testSave() {
@@ -70,7 +59,12 @@ class CommentRepositoryTest {
         postRepository.saveAndFlush(post)
 
         // when
-        val comment = Comment(content = "comment-content", post = post, nickname = "non-member-nickname", password = "comment-password")
+        val comment = Comment(
+            content = "comment-content",
+            post = post,
+            nickname = "non-member-nickname",
+            password = "comment-password"
+        )
         commentRepository.saveAndFlush(comment)
 
         // then
@@ -93,8 +87,13 @@ class CommentRepositoryTest {
         galleryRepository.saveAndFlush(gallery)
         postRepository.saveAndFlush(post)
 
-        repeat (30) {
-            val comment = Comment(content = "comment-content-$it", post = post, nickname = "non-member-nickname-$it", password = "comment-password-$it")
+        repeat(30) {
+            val comment = Comment(
+                content = "comment-content-$it",
+                post = post,
+                nickname = "non-member-nickname-$it",
+                password = "comment-password-$it"
+            )
             commentRepository.saveAndFlush(comment)
         }
 
