@@ -46,4 +46,8 @@ class Post(
     fun wasNotWrittenBy(other: Member): Boolean = (other == this.member)
 
     fun isSamePassword(otherPassword: String): Boolean = (otherPassword == this.password)
+
+    fun viewCountUp() {
+        statistics.viewCountUp()
+    }
 }
