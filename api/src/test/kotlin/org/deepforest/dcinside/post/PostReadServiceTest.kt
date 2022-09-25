@@ -40,20 +40,24 @@ class PostReadServiceTest {
     @DisplayName("게시글 단건 조회 테스트: post.member 가 존재하면 회원, 없으면 비회원")
     inner class FindPost {
 
-        private lateinit var post: Post
+        private lateinit var memberPost: Post
+        private lateinit var noneMemberPost: Post
         private lateinit var member: Member
+        private lateinit var gallery: Gallery
 
         @BeforeEach
         internal fun setUp() {
             member = Member(null, "username", "email", "nickname", "password", MemberRole.ROLE_FIXED)
             memberRepository.saveAndFlush(member)
 
-            val gallery = Gallery(null, GalleryType.MAJOR, "major-gallery")
+            gallery = Gallery(null, GalleryType.MAJOR, "major-gallery")
             galleryRepository.saveAndFlush(gallery)
 
+            memberPost = Post(null, "nickname", "major-title", "major-content", "major-password", member, gallery)
+            postRepository.saveAndFlush(memberPost)
 
-            post = Post(null, "nickname", "major-title", "major-content", "major-password", member, gallery)
-            postRepository.saveAndFlush(post)
+            noneMemberPost = Post(null, "nickname", "major-title", "major-content", password = null, member = null, gallery)
+            postRepository.saveAndFlush(noneMemberPost)
         }
 
         @DisplayName("회원이 작성한 글에는 writer.username 이 존재한다.")
@@ -61,15 +65,15 @@ class PostReadServiceTest {
         fun testFindPostByRealMember() {
 
             // when
-            val response = postReadService.findPostByIdAndIncreaseViewCount(post.id!!)
+            val response = postReadService.findPostByIdAndIncreaseViewCount(memberPost.id!!)
 
             // then
-            assertThat(response.id).isEqualTo(post.id)
-            assertThat(response.nickname).isEqualTo(post.nickname)
-            assertThat(response.title).isEqualTo(post.title)
-            assertThat(response.content).isEqualTo(post.content)
-            assertThat(response.createdAt).isEqualTo(TimeFormatHelper.from(post.createdAt))
-            assertThat(response.updatedAt).isEqualTo(TimeFormatHelper.from(post.updatedAt))
+            assertThat(response.id).isEqualTo(memberPost.id)
+            assertThat(response.nickname).isEqualTo(memberPost.nickname)
+            assertThat(response.title).isEqualTo(memberPost.title)
+            assertThat(response.content).isEqualTo(memberPost.content)
+            assertThat(response.createdAt).isEqualTo(TimeFormatHelper.from(memberPost.createdAt))
+            assertThat(response.updatedAt).isEqualTo(TimeFormatHelper.from(memberPost.updatedAt))
 
             assertThat(response.writer.memberType).isEqualTo(MemberType.FIXED)
             assertThat(response.writer.nickname).isEqualTo(member.nickname)
@@ -79,19 +83,20 @@ class PostReadServiceTest {
         @Test
         @DisplayName("비회원이 작성한 글은 writer.username 이 존재하지 않는다.")
         fun testFindPostByNonMember() {
+
             // when
-            val response = postReadService.findPostByIdAndIncreaseViewCount(post.id!!)
+            val response = postReadService.findPostByIdAndIncreaseViewCount(noneMemberPost.id!!)
 
             // then
-            assertThat(response.id).isEqualTo(post.id)
-            assertThat(response.nickname).isEqualTo(post.nickname)
-            assertThat(response.title).isEqualTo(post.title)
-            assertThat(response.content).isEqualTo(post.content)
-            assertThat(response.createdAt).isEqualTo(TimeFormatHelper.from(post.createdAt))
-            assertThat(response.updatedAt).isEqualTo(TimeFormatHelper.from(post.updatedAt))
+            assertThat(response.id).isEqualTo(noneMemberPost.id)
+            assertThat(response.nickname).isEqualTo(noneMemberPost.nickname)
+            assertThat(response.title).isEqualTo(noneMemberPost.title)
+            assertThat(response.content).isEqualTo(noneMemberPost.content)
+            assertThat(response.createdAt).isEqualTo(TimeFormatHelper.from(noneMemberPost.createdAt))
+            assertThat(response.updatedAt).isEqualTo(TimeFormatHelper.from(noneMemberPost.updatedAt))
 
             assertThat(response.writer.memberType).isEqualTo(MemberType.NONE)
-            assertThat(response.writer.nickname).isEqualTo(post.nickname)
+            assertThat(response.writer.nickname).isEqualTo(noneMemberPost.nickname)
             assertThat(response.writer.username).isNull()
         }
 
@@ -99,7 +104,7 @@ class PostReadServiceTest {
         @Test
         fun increaseViewCountTest() {
             // when
-            val response = postReadService.findPostByIdAndIncreaseViewCount(post.id!!)
+            val response = postReadService.findPostByIdAndIncreaseViewCount(memberPost.id!!)
 
             // then
             assertThat(response.postStatistics.viewCount).isEqualTo(1)
