@@ -5,18 +5,14 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.deepforest.dcinside.common.SecurityUtil
 import org.deepforest.dcinside.dto.ResponseDto
 import org.deepforest.dcinside.post.dto.*
-import org.deepforest.dcinside.post.service.PostForMemberService
-import org.deepforest.dcinside.post.service.PostForNonMemberService
-import org.deepforest.dcinside.post.service.PostReadService
+import org.deepforest.dcinside.post.service.PostService
 import org.springframework.web.bind.annotation.*
 
 @Tag(name = "/posts", description = "게시글 API")
 @RequestMapping("/api/v1/posts")
 @RestController
 class PostController(
-    val postReadService: PostReadService,
-    val postForMemberService: PostForMemberService,
-    val postForNonMemberService: PostForNonMemberService
+    val postService: PostService,
 ) {
 
     @Operation(summary = "특정 갤러리에 속한 게시글 리스트 조회", description = "리스트로 내려주기 위해 사이즈를 많이 차지할 것 같은 content 는 미포함")
@@ -25,7 +21,7 @@ class PostController(
         @RequestParam(required = true) galleryId: Long,
         @RequestParam(required = false) lastPostId: Long? = Long.MAX_VALUE,
     ): ResponseDto<List<PostResponseDto>> = ResponseDto.ok(
-        postReadService.findPostsByGalleryId(galleryId, lastPostId)
+        postService.findPostsByGalleryId(galleryId, lastPostId)
     )
 
     @Operation(summary = "Post 단건 조회")
@@ -33,7 +29,7 @@ class PostController(
     fun findPost(
         @PathVariable("postId") postId: Long
     ): ResponseDto<PostResponseDto> = ResponseDto.ok(
-        postReadService.findPostById(postId)
+        postService.findPostByIdAndIncreaseViewCount(postId)
     )
 
 
@@ -42,7 +38,7 @@ class PostController(
     fun savePostForMember(
         @RequestBody postWrittenByMemberDto: PostWrittenByMemberDto
     ): ResponseDto<Unit> {
-        postForMemberService.savePost(postWrittenByMemberDto, SecurityUtil.getCurrentMemberId())
+        postService.savePost(postWrittenByMemberDto, SecurityUtil.getCurrentMemberId())
         return ResponseDto.ok()
     }
 
@@ -52,7 +48,7 @@ class PostController(
         @PathVariable("postId") postId: Long,
         @RequestBody postUpdateDto: PostUpdateDto
     ): ResponseDto<Unit> {
-        postForMemberService.updatePost(postId, postUpdateDto, SecurityUtil.getCurrentMemberId())
+        postService.updatePost(postId, postUpdateDto, SecurityUtil.getCurrentMemberId())
         return ResponseDto.ok()
     }
 
@@ -61,7 +57,7 @@ class PostController(
     fun deletePostForMember(
         @PathVariable("postId") postId: Long
     ): ResponseDto<Unit> = ResponseDto.ok(
-        postForMemberService.deletePost(postId, SecurityUtil.getCurrentMemberId())
+        postService.deletePost(postId, SecurityUtil.getCurrentMemberId())
     )
 
 
@@ -70,7 +66,7 @@ class PostController(
     fun savePostForNonMember(
         @RequestBody postWrittenByNonMemberDto: PostWrittenByNonMemberDto
     ): ResponseDto<Unit> {
-        postForNonMemberService.savePost(postWrittenByNonMemberDto)
+        postService.savePost(postWrittenByNonMemberDto)
         return ResponseDto.ok()
     }
 
@@ -80,7 +76,7 @@ class PostController(
         @PathVariable("postId") postId: Long,
         @RequestBody postUpdateDto: PostUpdateDto
     ): ResponseDto<Unit> {
-        postForNonMemberService.updatePost(postId, postUpdateDto)
+        postService.updatePost(postId, postUpdateDto)
         return ResponseDto.ok()
     }
 
@@ -89,7 +85,7 @@ class PostController(
     fun deletePostForNonMember(
         @PathVariable("postId") postId: Long
     ): ResponseDto<Unit> = ResponseDto.ok(
-        postForNonMemberService.deletePost(postId)
+        postService.deletePost(postId)
     )
 
     @Operation(summary = "비회원의 Post 호출 전 비밀번호 확인 API")
@@ -97,6 +93,6 @@ class PostController(
     fun checkAccess(
         @RequestBody postAccessDto: PostAccessDto
     ): ResponseDto<Boolean> = ResponseDto.ok(
-        postForNonMemberService.checkAccess(postAccessDto)
+        postService.checkAccess(postAccessDto)
     )
 }
