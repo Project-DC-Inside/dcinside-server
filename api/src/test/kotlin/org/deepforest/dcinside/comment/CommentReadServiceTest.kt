@@ -1,6 +1,7 @@
 package org.deepforest.dcinside.comment
 
-import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
+import org.deepforest.dcinside.IntegrationTest
 import org.deepforest.dcinside.comment.dto.CommentResponseDto
 import org.deepforest.dcinside.comment.repository.CommentRepository
 import org.deepforest.dcinside.comment.service.CommentReadService
@@ -15,29 +16,15 @@ import org.deepforest.dcinside.member.MemberRepository
 import org.deepforest.dcinside.post.repository.PostRepository
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.transaction.annotation.Transactional
 
-@Transactional
-@SpringBootTest
-class CommentReadServiceTest {
-
-    @Autowired
-    private lateinit var commentReadService: CommentReadService
-
-    @Autowired
-    private lateinit var commentRepository: CommentRepository
-
-    @Autowired
-    private lateinit var memberRepository: MemberRepository
-
-    @Autowired
-    private lateinit var postRepository: PostRepository
-
-    @Autowired
-    private lateinit var galleryRepository: GalleryRepository
-
+@IntegrationTest
+class CommentReadServiceTest(
+    private val commentReadService: CommentReadService,
+    private val commentRepository: CommentRepository,
+    private val memberRepository: MemberRepository,
+    private val postRepository: PostRepository,
+    private val galleryRepository: GalleryRepository,
+) {
     @Test
     @DisplayName("특정 게시글의 댓글 리스트 가져오기. 오래된 순으로 20개 전달")
     fun testFindList() {
@@ -49,7 +36,7 @@ class CommentReadServiceTest {
         galleryRepository.saveAndFlush(gallery)
         postRepository.saveAndFlush(post)
 
-        repeat (30) {
+        repeat(30) {
             val comment = Comment(content = "comment-content-$it", post, member)
             commentRepository.saveAndFlush(comment)
         }
@@ -75,7 +62,7 @@ class CommentReadServiceTest {
         galleryRepository.saveAndFlush(gallery)
         postRepository.saveAndFlush(post)
 
-        repeat (30) {
+        repeat(30) {
             val comment = Comment(content = "comment-content-$it", post, member)
             commentRepository.saveAndFlush(comment)
             val nestedComment = Comment(content = "nested-content-$it", post, member, comment)
@@ -104,7 +91,7 @@ class CommentReadServiceTest {
         galleryRepository.saveAndFlush(gallery)
         postRepository.saveAndFlush(post)
 
-        repeat (30) {
+        repeat(30) {
             val comment = Comment(content = "comment-content-$it", post, member)
             commentRepository.saveAndFlush(comment)
         }
@@ -129,8 +116,13 @@ class CommentReadServiceTest {
         galleryRepository.saveAndFlush(gallery)
         postRepository.saveAndFlush(post)
 
-        repeat (30) {
-            val comment = Comment(content = "comment-content-$it", nickname = "comment-nickname-$it", password = "comment-password-$it", post = post)
+        repeat(30) {
+            val comment = Comment(
+                content = "comment-content-$it",
+                nickname = "comment-nickname-$it",
+                password = "comment-password-$it",
+                post = post
+            )
             commentRepository.saveAndFlush(comment)
         }
 
