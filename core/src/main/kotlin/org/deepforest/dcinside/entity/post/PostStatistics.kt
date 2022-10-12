@@ -21,9 +21,6 @@ class PostStatistics(
     @JoinColumn(name = "post_id")
     val post: Post,
 
-    @JoinColumn(name = "view_count")
-    var viewCount: Long = 0L,
-
     @JoinColumn(name = "like_count")
     var likeCount: Long = 0L,
 
@@ -32,4 +29,14 @@ class PostStatistics(
 
     @JoinColumn(name = "comment_count")
     var commentCount: Long = 0L,
-)
+
+    viewCount: Long = 0L,
+) {
+    @JoinColumn(name = "view_count")
+    var viewCount: Long = viewCount
+        protected set
+
+    fun viewCountUp() {
+        viewCount++
+    }
+}
